@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'rfid' 
+ * Project: 'code haut-parleurs - Avertissement sonore' 
  * Target:  'Target 1' 
  */
 

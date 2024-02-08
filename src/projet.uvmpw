@@ -8,8 +8,23 @@
   <WorkspaceName>Z:\home\nohan\ESE\ESE-Voiture\src\projet.uvmpw</WorkspaceName>
 
   <project>
+    <PathAndName>.\haut-parleurs\haut-parleurs.uvprojx</PathAndName>
+    <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
     <PathAndName>.\lidar\lidar.uvprojx</PathAndName>
     <NodeIsActive>1</NodeIsActive>
+    <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
+    <PathAndName>.\pilotage\pilotage.uvprojx</PathAndName>
+    <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
+    <PathAndName>.\rfid\rfid.uvprojx</PathAndName>
     <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
