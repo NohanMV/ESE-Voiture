@@ -1,0 +1,44 @@
+#include "Driver_USART.h"               // ::CMSIS Driver:USART
+
+extern ARM_DRIVER_USART Driver_USART1;
+
+void Init_UART(void){
+	Driver_USART1.Initialize(NULL);
+	Driver_USART1.PowerControl(ARM_POWER_FULL);
+	Driver_USART1.Control(	ARM_USART_MODE_ASYNCHRONOUS |
+							ARM_USART_DATA_BITS_8		|
+							ARM_USART_STOP_BITS_1		|
+							ARM_USART_PARITY_NONE		|
+							ARM_USART_FLOW_CONTROL_NONE,
+							9600);
+	Driver_USART1.Control(ARM_USART_CONTROL_TX,1);
+	Driver_USART1.Control(ARM_USART_CONTROL_RX,1);
+}
+
+int main (void){
+	uint8_t tab[50];
+	Init_UART();
+
+	while (1){
+		while(Driver_USART1.GetStatus().tx_busy == 1); // attente buffer TX vide
+		Driver_USART1.Send("\n\rHello World!!!",16);
+		
+	}	
+	return 0;
+}
+
+/*
+
+DFPlayer data frame format:
+0      1    2    3    4    5   6   7     8     9-byte
+START, VER, LEN, CMD, ACK, DH, DL, SUMH, SUML, END
+       -------- checksum --------
+
+
+int16_t checksum = 0;
+
+checksum = checksum - _dataBuffer[1] - _dataBuffer[2] - _dataBuffer[3] - _dataBuffer[4] - _dataBuffer[5] - _dataBuffer[6];
+
+_dataBuffer[7] = checksum >> 8;
+_dataBuffer[8] = checksum
+*/
