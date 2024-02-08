@@ -1,57 +1,0 @@
-Dependencies for Project 'code sonore', Target 'Target 1': (DO NOT MODIFY !)
-F (.\baseUART.c)(0x65C4A79E)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections-I "U:\Haut-parleurs - Avertissement sonore\RTE"-I "U:\Haut-parleurs - Avertissement sonore\RTE\Device\LPC1768"-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver-D__UVISION_VERSION="517" -D_RTE_ -DLPC175x_6x-o .\objects\baseuart.o --omf_browse .\objects\baseuart.crf --depend .\objects\baseuart.d)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include\Driver_USART.h)(0x5C8A78DC)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include\Driver_Common.h)(0x5C8A78DC)
-I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x55DB71CE)
-I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB71D0)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x55DB71C6)
-F (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver\UART_LPC17xx.c)(0x5770DDB2)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections-I "U:\Haut-parleurs - Avertissement sonore\RTE"-I "U:\Haut-parleurs - Avertissement sonore\RTE\Device\LPC1768"-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver-D__UVISION_VERSION="517" -D_RTE_ -DLPC175x_6x-o .\objects\uart_lpc17xx.o --omf_browse .\objects\uart_lpc17xx.crf --depend .\objects\uart_lpc17xx.d)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver\UART_LPC17xx.h)(0x5770DDB2)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include\LPC17xx.h)(0x58493182)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\core_cm3.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB71D0)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_version.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_armcc.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\mpu_armv7.h)(0x5C8FA234)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include\system_LPC17xx.h)(0x58493182)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include\Driver_USART.h)(0x5C8A78DC)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include\Driver_Common.h)(0x5C8A78DC)
-I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x55DB71CE)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x55DB71C6)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver\PIN_LPC17xx.h)(0x55828BEA)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver\GPDMA_LPC17xx.h)(0x568FAF18)
-I (U:\Haut-parleurs - Avertissement sonore\RTE\Device\LPC1768\RTE_Device.h)(0x65BCCAE6)
-I (U:\Haut-parleurs - Avertissement sonore\RTE\RTE_Components.h)(0x65BCC70F)
-F (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver\GPDMA_LPC17xx.c)(0x56935D76)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections-I "U:\Haut-parleurs - Avertissement sonore\RTE"-I "U:\Haut-parleurs - Avertissement sonore\RTE\Device\LPC1768"-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver-D__UVISION_VERSION="517" -D_RTE_ -DLPC175x_6x-o .\objects\gpdma_lpc17xx.o --omf_browse .\objects\gpdma_lpc17xx.crf --depend .\objects\gpdma_lpc17xx.d)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include\LPC17xx.h)(0x58493182)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\core_cm3.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB71D0)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_version.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_armcc.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\mpu_armv7.h)(0x5C8FA234)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include\system_LPC17xx.h)(0x58493182)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver\GPDMA_LPC17xx.h)(0x568FAF18)
-F (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver\PIN_LPC17xx.c)(0x55828BEA)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections-I "U:\Haut-parleurs - Avertissement sonore\RTE"-I "U:\Haut-parleurs - Avertissement sonore\RTE\Device\LPC1768"-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver-D__UVISION_VERSION="517" -D_RTE_ -DLPC175x_6x-o .\objects\pin_lpc17xx.o --omf_browse .\objects\pin_lpc17xx.crf --depend .\objects\pin_lpc17xx.d)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include\LPC17xx.h)(0x58493182)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\core_cm3.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB71D0)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_version.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_armcc.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\mpu_armv7.h)(0x5C8FA234)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include\system_LPC17xx.h)(0x58493182)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver\PIN_LPC17xx.h)(0x55828BEA)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x55DB71C6)
-F (RTE\Device\LPC1768\RTE_Device.h)(0x65BCCAE6)()
-F (RTE\Device\LPC1768\startup_LPC17xx.s)(0x58493182)(--cpu Cortex-M3 -g --apcs=interwork -I "U:\Haut-parleurs - Avertissement sonore\RTE"-I "U:\Haut-parleurs - Avertissement sonore\RTE\Device\LPC1768"-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver--pd "__UVISION_VERSION SETA 517" --pd "_RTE_ SETA 1" --pd "LPC175x_6x SETA 1"--list .\listings\startup_lpc17xx.lst --xref -o .\objects\startup_lpc17xx.o --depend .\objects\startup_lpc17xx.d)
-F (RTE\Device\LPC1768\system_LPC17xx.c)(0x58493182)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections-I "U:\Haut-parleurs - Avertissement sonore\RTE"-I "U:\Haut-parleurs - Avertissement sonore\RTE\Device\LPC1768"-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include-I C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver-D__UVISION_VERSION="517" -D_RTE_ -DLPC175x_6x-o .\objects\system_lpc17xx.o --omf_browse .\objects\system_lpc17xx.crf --depend .\objects\system_lpc17xx.d)
-I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x55DB71D0)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include\LPC17xx.h)(0x58493182)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\core_cm3.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_version.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_armcc.h)(0x5D25D706)
-I (C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include\mpu_armv7.h)(0x5C8FA234)
-I (C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include\system_LPC17xx.h)(0x58493182)
