@@ -3,8 +3,8 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'code haut-parleurs - Avertissement sonore' 
- * Target:  'Target 1' 
+ * Project: 'haut-parleurs' 
+ * Target:  'LPC1768' 
  */
 
 #ifndef RTE_COMPONENTS_H

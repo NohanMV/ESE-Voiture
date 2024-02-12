@@ -1,22 +1,44 @@
 #include "Driver_USART.h"               // ::CMSIS Driver:USART
+
+#define DEMARAGE         0x01
+#define ACCELERATION     0x02
+#define DECELERATION     0x03
+#define DEVEROUILLAGE    0x04
+#define ALARME           0x05
+#define CLIGNOTANT       0x06
+#define BIPBIP           0x07
+#define LECTURE					 0x0F
+
 // USART 1 :Tx P2.0  Rx P2.1
-/*
-DFPlayer data frame format:
-0      1    2    3    4    5   6   7     8     9-byte
-START, VER, LEN, CMD, ACK, DH, DL, SUMH, SUML, END
-       -------- checksum --------
-*/
+
+
 
 
 extern ARM_DRIVER_USART Driver_USART1;
 uint8_t reception[10];
 
-void datasend(uint8_t CMD, uint16_t DATA, uint8_t ACK);
- void datareceive(void);
+void datasend(uint8_t CMD,uint8_t DATA); // fonction qui créer le buffer de donnée a envoyer 
+void Init_UART_HAUT_PARLEURS(void); // init de l'uart 1 pour les hauts-parleurs
+void haut_parleurs(char piste); // fonction pour choisir la piste a jouer
 
 
+int main(void)
+{
+	Init_UART_HAUT_PARLEURS();
+	
+	haut_parleurs(BIPBIP);
+	while(1)
+	{}
+	return 0;
+}
 
-void Init_UART(void){
+
+void haut_parleurs(char piste) // fonction pour choisir la piste a jouer
+{
+	datasend(LECTURE,piste);
+}
+
+void Init_UART_HAUT_PARLEURS(void){ // init de l'uart 1 pour les hauts-parleurs
 	Driver_USART1.Initialize(NULL);
 	Driver_USART1.PowerControl(ARM_POWER_FULL);
 	Driver_USART1.Control(	ARM_USART_MODE_ASYNCHRONOUS |
@@ -26,50 +48,28 @@ void Init_UART(void){
 							ARM_USART_FLOW_CONTROL_NONE,
 							9600);
 	Driver_USART1.Control(ARM_USART_CONTROL_TX,1);
-	Driver_USART1.Control(ARM_USART_CONTROL_RX,1);
-}
 
-int main (void){
-
-	Init_UART();
-	
-	
-	while (1)
-	{
-		datasend(0x0F,0x0004,0x00); // DATAH sert a choisir le fichier, DATAL sert a choisir la music
-	}	
-	return 0;
 }
 
 
-void datasend(uint8_t CMD,uint16_t DATA,uint8_t ACK)
+
+void datasend(uint8_t CMD,uint8_t DATA) // fonction pour créer le buffer de donnée a envoyer
 {
-	uint8_t dataBuffer[10] = { 0x7E, 0xFF, 0x06 ,0x00 ,0x00 ,0x00 ,0x00, 0x00 ,0x00 ,0xEF};
-	int16_t checksum = 0;
-
+/*
+DFPlayer data frame format:
+															START, VER, LEN, CMD, ACK,   DH,     DL, SUMH, SUML, END
+															0      1    2    3    4       5      6     7     8     9-byte */
+	uint8_t dataBuffer[10] = { 0x7E, 0xFF, 0x06 ,0x00 ,0x00 ,0x01 ,0x00, 0x00 ,0x00 ,0xEF}; // On créer notre buffer et on met les valuers qui ne change pas a chaque envoie
+	int16_t checksum = 0;   
 	int i;
-	
 		while(Driver_USART1.GetStatus().tx_busy == 1); // attente buffer TX vide
-		dataBuffer[5] = DATA >>8;
-		dataBuffer[6] = DATA;
-		dataBuffer[4] = ACK;
-		dataBuffer[3] = CMD;
-	
-		checksum = checksum - dataBuffer[1] - dataBuffer[2] - dataBuffer[3] - dataBuffer[4] - dataBuffer[5] - dataBuffer[6];
-		dataBuffer[7] = checksum >> 8;
-		dataBuffer[8] = checksum;
-
-		Driver_USART1.Send(dataBuffer,10);
-
+		dataBuffer[6] = DATA; // on met dans le buffer la data a envoyer
+		dataBuffer[3] = CMD;  // on met dans le buffer la command voulue
 		
+	//       -------- checksum --------
+		checksum = checksum - dataBuffer[1] - dataBuffer[2] - dataBuffer[3] - dataBuffer[4] - dataBuffer[5] - dataBuffer[6]; // on calcule le checksum
+		dataBuffer[7] = checksum >> 8; // on prend que les bits de poids fort est on le mets dans le buffer
+		dataBuffer[8] = checksum; // on prend que les bits de poids faible est on le mets dans le buffer
+	//       -------- checksum --------
+		Driver_USART1.Send(dataBuffer,10); // on envoie notre buffer avec ses 10 bits
 }
-
-
- void datareceive(void)
- {
-
-	// récupération de la chaine qui se complète au fur et à mesure
-		Driver_USART1.Receive(reception,10); // la fonction remplira jusqu'à 10 cases
-		while (Driver_USART1.GetRxCount() <1 ) ; // on attend que 1 case soit pleine
-		
- }
