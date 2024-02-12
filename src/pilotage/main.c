@@ -92,11 +92,12 @@ uint32_t HAL_GetTick (void) {
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 extern ARM_DRIVER_I2C Driver_I2C1;
-extern ARM_DRIVER_USART Driver_USART2;
+extern ARM_DRIVER_USART Driver_USART3;
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 void Init_I2C(void);
+void Init_UART(void);
 
 /* Private functions ---------------------------------------------------------*/
 /**
@@ -125,6 +126,17 @@ unsigned char read1byte(unsigned char composant, unsigned char registre)    //Le
 		while (Driver_I2C1.GetStatus().busy == 1);	// attente fin transmission
 		return data[0]; 
 		}
+	
+	void datasend(uint8_t x,uint8_t y,uint8_t cz)
+{
+	uint8_t dataBuffer[3];
+	dataBuffer[0] = x;
+		dataBuffer[1] = y;
+		dataBuffer[2] = cz;
+	
+	while(Driver_USART3.GetStatus().tx_busy == 1); // attente buffer TX vide
+	Driver_USART3.Send(dataBuffer,3);
+}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
@@ -139,8 +151,8 @@ int main(void)
        - Low Level Initialization
      */
 	 
-	uint8_t tab[10], maValeur;
-	unsigned char X, Y;
+	uint8_t tab[10];
+	uint8_t X, Y, CZ;
 	HAL_Init();
 
 	/* Configure the system clock to 168 MHz */
@@ -153,10 +165,11 @@ int main(void)
 	/* Initialize CMSIS-RTOS2 */
 	//osKernelInitialize ();
 
-	//NVIC_SetPriority(USART2_IRQn,2);		// nÃ©cessaire ? (si LCD ?)
+	//NVIC_SetPriority(USART2_IRQn,2);		// nécessaire ? (si LCD ?)
 
 	LED_Initialize ();
 	Init_I2C();
+	Init_UART();
 	
 
 	/* Create thread functions that start executing, 
@@ -167,11 +180,12 @@ int main(void)
 	//LED_On (3);
 	//#endif
 	//osDelay(osWaitForever);
-		write1byte(SLAVE_I2C_ADDR,0xF0,0x55); // initialiser le 1er registre 
+		write1byte(SLAVE_I2C_ADDR,0xF0,0x55); // initialiser la commande de démarrage du nunchuk
 
 /* Infinite loop */
 	while (1)
 	{
+		int i;
 //		tab[0] = 0;
 //		Driver_I2C1.MasterTransmit(SLAVE_I2C_ADDR, tab, 1, false);		// false = avec stop
 //		while (Driver_I2C1.GetStatus().busy == 1);	// attente fin transmission
@@ -179,11 +193,11 @@ int main(void)
 		write1byte(SLAVE_I2C_ADDR,0x00,0x00); 
 		X = read1byte(SLAVE_I2C_ADDR, 0x00);  //lecture X
 		Y = read1byte(SLAVE_I2C_ADDR, 0x01);  // lecture Y
-		read1byte(SLAVE_I2C_ADDR, 0x02);  // lecture Y
-		read1byte(SLAVE_I2C_ADDR, 0x03);  // lecture Y
-		read1byte(SLAVE_I2C_ADDR, 0x04);  // lecture Y
-		read1byte(SLAVE_I2C_ADDR, 0x05);  // lecture Y
+		CZ= read1byte(SLAVE_I2C_ADDR, 0x05);  // lecture boutons C et Z
 		
+		datasend(X,Y,CZ);
+		for(i = 0; i<10000; i++){}
+		//X et Y sur 8bits  de (00 à FF)
 	}
 }
 
@@ -280,16 +294,16 @@ void Init_I2C(void){
 }
 
 void Init_UART(void){
-	Driver_USART2.Initialize(NULL);
-	Driver_USART2.PowerControl(ARM_POWER_FULL);
-	Driver_USART2.Control(	ARM_USART_MODE_ASYNCHRONOUS |
+	Driver_USART3.Initialize(NULL);
+	Driver_USART3.PowerControl(ARM_POWER_FULL);
+	Driver_USART3.Control(	ARM_USART_MODE_ASYNCHRONOUS |
 							ARM_USART_DATA_BITS_8		|
 							ARM_USART_STOP_BITS_1		|
 							ARM_USART_PARITY_NONE		|
 							ARM_USART_FLOW_CONTROL_NONE,
 							115200);
-	Driver_USART2.Control(ARM_USART_CONTROL_TX,1);
-	Driver_USART2.Control(ARM_USART_CONTROL_RX,1);
+	Driver_USART3.Control(ARM_USART_CONTROL_TX,1);
+	Driver_USART3.Control(ARM_USART_CONTROL_RX,1);
 }
 
 #ifdef  USE_FULL_ASSERT
