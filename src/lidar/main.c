@@ -4,6 +4,7 @@
 #include "GLCD_Config.h"   
 #include <stdio.h>
 #include <lpc17xx.h>
+#include <math.h>
 
 
 #define SBIT_CNTEN     0 
@@ -13,13 +14,20 @@
 #define SBIT_PWMENA6   14
 #define PWM_6          10
 
+#define SCREEN_WIDTH 		 320
+#define SCREEN_HEIGHT 		 240
+#define LIDAR_RANGE 	 250
+#define LIDAR_RESOLUTION 360
+
 extern ARM_DRIVER_USART Driver_USART0;
+extern ARM_DRIVER_USART Driver_USART1;
 
 extern GLCD_FONT GLCD_Font_6x8;
 extern GLCD_FONT GLCD_Font_16x24;
 
 char 	rxSCAN[12], lidarQualite;
-unsigned short lidarAngle, lidarDistance;
+unsigned short lidarAngle, lidarDistance[361];
+float scale = (float)GLCD_WIDTH / LIDAR_RANGE;
 
 void Init_USART0(void){
 	Driver_USART0.Initialize(NULL);
@@ -32,6 +40,46 @@ void Init_USART0(void){
 							115200);
 	Driver_USART0.Control(ARM_USART_CONTROL_TX,1);
 	Driver_USART0.Control(ARM_USART_CONTROL_RX,1);
+}
+
+void Init_USART1(void){
+	Driver_USART1.Initialize(NULL);
+	Driver_USART1.PowerControl(ARM_POWER_FULL);
+	Driver_USART1.Control(	ARM_USART_MODE_ASYNCHRONOUS |
+							ARM_USART_DATA_BITS_8		|
+							ARM_USART_STOP_BITS_1		|
+							ARM_USART_PARITY_NONE		|
+							ARM_USART_FLOW_CONTROL_NONE,
+							115200);
+	Driver_USART1.Control(ARM_USART_CONTROL_TX,1);
+	Driver_USART1.Control(ARM_USART_CONTROL_RX,1);
+	
+	
+}
+void updateDisplay() {
+	int oldY, oldX;
+    // Calculer l'échelle de conversion de la distance lidar à l'écran
+  
+
+//    // Dessiner le cercle en utilisant les valeurs lidar
+    for (int i = 0; i < 360; i++) {
+//        // Convertir la distance lidar en coordonnées d'écran
+		
+	int x = 160 + (int)(lidarDistance[i] * scale * cos(i));
+  int y = 120 + (int)(lidarDistance[i] * scale * sin(i));
+
+        // Dessiner le pixel à la position calculée
+	//GLCD_SetForegroundColor  (GLCD_COLOR_BLACK);
+ // GLCD_DrawPixel(oldX, oldY);
+	GLCD_SetForegroundColor  (GLCD_COLOR_WHITE);
+	GLCD_DrawPixel(x, y);
+	
+	//oldY = y;
+	//oldX = x;
+	
+//		if (i == 500){
+//				GLCD_ClearScreen();  // Effacer l'écran
+		}
 }
 
 void PWM_Init(void) {
@@ -86,24 +134,48 @@ void LidarSCAN (void) {
 }
 	
 
-void LidarAffichage (char lidarQualite, unsigned short lidarAngle, unsigned short lidarDistance){
-		char lcdQualite[11], lcdAngle[11], lcdDistance[13];
+void LidarAffichageGLCD (char lidarQualite, unsigned short lidarAngle, unsigned short lidarDistance[]){
+		char lcdQualite[12], lcdAngle[11], lcdDistance[17];
 
-		lcdQualite[10]='\0';
+		lcdQualite[11]='\0';
 		lcdAngle[10]='\0';
-		lcdDistance[12]='\0';
+		lcdDistance[16]='\0';
 	
-		sprintf(lcdQualite, 	"Qualite: %d", 	lidarQualite);
+		sprintf(lcdQualite, 	"Qualite: %2d", 	lidarQualite);
 		sprintf(lcdAngle, 		"Angle: %3d", 		lidarAngle);
-		sprintf(lcdDistance, 	"Distance: %05d", lidarDistance);
+		sprintf(lcdDistance, 	"Distance: %05d", lidarDistance[lidarAngle]);
 	
 		GLCD_DrawString(0, 1*24, 	lcdQualite);
 		GLCD_DrawString(0, 2*24, 	lcdAngle);
 		GLCD_DrawString(0, 3*24, 	lcdDistance);
 }
 
+void LidarAffichageUART (char lidarQualite, unsigned short lidarAngle, unsigned short lidarDistance[]){
+		char lcdQualite[12], lcdAngle[11], lcdDistance[17];
+
+		lcdQualite[11]='\0';
+		lcdAngle[10]='\0';
+		lcdDistance[16]='\0';
+	
+		sprintf(lcdQualite, 	"Qualite: %2d", 	lidarQualite);
+		sprintf(lcdAngle, 		"Angle: %3d", 		lidarAngle);
+		sprintf(lcdDistance, 	"Distance: %05d", lidarDistance[lidarAngle]);
+		
+		while(Driver_USART1.GetStatus().tx_busy == 1);
+		Driver_USART1.Send("lol", 4);
+		while(Driver_USART1.GetStatus().tx_busy == 1);
+		Driver_USART1.Send(lcdQualite, 11);
+		while(Driver_USART1.GetStatus().tx_busy == 1);
+		Driver_USART1.Send(lcdAngle, 11);
+		while(Driver_USART1.GetStatus().tx_busy == 1);
+		Driver_USART1.Send(lcdDistance, 13);
+}
+
+
 int main(void){
+	unsigned short compteur;
 	GLCD_Initialize();
+	GLCD_SetBackgroundColor(GLCD_COLOR_BLACK);
 	GLCD_ClearScreen();
 	GLCD_SetFont(&GLCD_Font_16x24);
 	
@@ -113,12 +185,17 @@ int main(void){
 	LidarSCAN();
 	
 	while(1) {
-		//LidarSCAN();
 		Driver_USART0.Receive(rxSCAN,12);
-		lidarQualite  = rxSCAN[0] >> 3;
-		lidarAngle    = (((rxSCAN[2] << 8) | rxSCAN[1]) >> 1) / 64.0;
-		lidarDistance = ((rxSCAN[4] << 8) | rxSCAN[3]) / 4.0 ;
-		LidarAffichage(lidarQualite, lidarAngle, lidarDistance);
+		lidarQualite  = rxSCAN[0] >> 2;
+		if (lidarQualite > 32) { // Qualité minimum de 50 par rapport à val max de 64, augmentation de la précision
+			lidarAngle    = (((rxSCAN[2] << 7) | rxSCAN[1]) >> 1) / 64.0;
+			lidarDistance[lidarAngle] = ((rxSCAN[4] << 7) | rxSCAN[3]) / 4.0 ;
+			//LidarAffichageUART(lidarQualite, lidarAngle, lidarDistance);
+			//LidarAffichageGLCD(lidarQualite, lidarAngle, lidarDistance);
+			compteur++;
+		}
+		if (compteur == 360) {updateDisplay(); compteur = 0;}
+		
 	}
 }
 
