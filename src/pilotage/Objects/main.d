@@ -1,8 +1,8 @@
 .\objects\main.o: main.c
 .\objects\main.o: main.h
 .\objects\main.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h
-.\objects\main.o: U:\2022_STM32F4_base_I2C\RTE\Device\STM32F407VGTx\stm32f4xx_hal_conf.h
-.\objects\main.o: U:\2022_STM32F4_base_I2C\RTE\RTE_Components.h
+.\objects\main.o: U:\Pilotage\RTE\Device\STM32F407VGTx\stm32f4xx_hal_conf.h
+.\objects\main.o: U:\Pilotage\RTE\RTE_Components.h
 .\objects\main.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h
 .\objects\main.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_def.h
 .\objects\main.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h

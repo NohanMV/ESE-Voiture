@@ -92,7 +92,7 @@ uint32_t HAL_GetTick (void) {
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 extern ARM_DRIVER_I2C Driver_I2C1;
-extern ARM_DRIVER_USART Driver_USART3;
+extern ARM_DRIVER_USART Driver_USART2;
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 static void Error_Handler(void);
@@ -134,8 +134,8 @@ unsigned char read1byte(unsigned char composant, unsigned char registre)    //Le
 		dataBuffer[1] = y;
 		dataBuffer[2] = cz;
 	
-	while(Driver_USART3.GetStatus().tx_busy == 1); // attente buffer TX vide
-	Driver_USART3.Send(dataBuffer,3);
+	while(Driver_USART2.GetStatus().tx_busy == 1); // attente buffer TX vide
+	Driver_USART2.Send(dataBuffer,3);
 }
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(void)
@@ -196,7 +196,7 @@ int main(void)
 		CZ= read1byte(SLAVE_I2C_ADDR, 0x05);  // lecture boutons C et Z
 		
 		datasend(X,Y,CZ);
-		for(i = 0; i<10000; i++){}
+		for(i = 0; i<1000000; i++){}
 		//X et Y sur 8bits  de (00 à FF)
 	}
 }
@@ -294,16 +294,16 @@ void Init_I2C(void){
 }
 
 void Init_UART(void){
-	Driver_USART3.Initialize(NULL);
-	Driver_USART3.PowerControl(ARM_POWER_FULL);
-	Driver_USART3.Control(	ARM_USART_MODE_ASYNCHRONOUS |
+	Driver_USART2.Initialize(NULL);
+	Driver_USART2.PowerControl(ARM_POWER_FULL);
+	Driver_USART2.Control(	ARM_USART_MODE_ASYNCHRONOUS |
 							ARM_USART_DATA_BITS_8		|
 							ARM_USART_STOP_BITS_1		|
 							ARM_USART_PARITY_NONE		|
 							ARM_USART_FLOW_CONTROL_NONE,
 							115200);
-	Driver_USART3.Control(ARM_USART_CONTROL_TX,1);
-	Driver_USART3.Control(ARM_USART_CONTROL_RX,1);
+	Driver_USART2.Control(ARM_USART_CONTROL_TX,1);
+	Driver_USART2.Control(ARM_USART_CONTROL_RX,1);
 }
 
 #ifdef  USE_FULL_ASSERT
