@@ -417,9 +417,14 @@
           <GroupName>Source Files</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
+              <FileName>haut-parleur.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\main.c</FilePath>
+              <FilePath>.\haut-parleur.c</FilePath>
+            </File>
+            <File>
+              <FileName>main_exemple.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\main_exemple.c</FilePath>
             </File>
           </Files>
         </Group>

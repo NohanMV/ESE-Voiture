@@ -1,5 +1,6 @@
 --cpu Cortex-M3
-".\objects\main.o"
+".\objects\haut-parleur.o"
+".\objects\main_exemple.o"
 ".\objects\uart_lpc17xx.o"
 ".\objects\gpdma_lpc17xx.o"
 ".\objects\pin_lpc17xx.o"

@@ -21,21 +21,29 @@ Target DLL:      UL2CM3.DLL V1.156.1.0
 Dialog DLL:      TARMP1.DLL V1.24.0.0
  
 <h2>Project:</h2>
-C:\Users\TEMP.GEII2.004\Documents\ESE-Voiture-main\src\haut-parleurs\haut-parleurs.uvprojx
-Project File Date:  02/12/2024
+U:\haut-parleurs\haut-parleurs.uvprojx
+Project File Date:  03/05/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
-Build Project 'haut-parleurs' - Target 'LPC1768'
-compiling main.c...
-C:\Users\TEMP.GEII2.004\Documents\ESE-Voiture-main\src\haut-parleurs\main.c(32): warning:  #111-D: statement is unreachable
+Build target 'LPC1768'
+compiling main_exemple.c...
+haut-parleur.h(13): warning:  #1-D: last line of file ends without a newline
+  void haut_parleurs(char piste); 		// fonction pour choisir la piste a jouer
+main_exemple.c(11): warning:  #111-D: statement is unreachable
   	return 0;
-C:\Users\TEMP.GEII2.004\Documents\ESE-Voiture-main\src\haut-parleurs\main.c(64): warning:  #177-D: variable "i" was declared but never referenced
+main_exemple.c(12): warning:  #1-D: last line of file ends without a newline
+  }
+main_exemple.c: 3 warnings, 0 errors
+compiling haut-parleur.c...
+haut-parleur.h(13): warning:  #1-D: last line of file ends without a newline
+  void haut_parleurs(char piste); 		// fonction pour choisir la piste a jouer
+haut-parleur.c(41): warning:  #177-D: variable "i" was declared but never referenced
   	int i;
-main.c: 2 warnings, 0 errors
+haut-parleur.c: 2 warnings, 0 errors
 linking...
 Program Size: Code=8712 RO-data=872 RW-data=16 ZI-data=872  
-".\Objects\code sonore.axf" - 0 Error(s), 2 Warning(s).
+".\Objects\code sonore.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -48,16 +56,16 @@ Package Vendor: ARM
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.LPC1700_DFP.2.4.0.pack
-                Keil::CMSIS Driver:USART:2.6.0
+                Keil::Device:GPDMA:1.2.0
                 NXP LPC1700 Series Device Support, Drivers and Examples for MCB1700 and LPC1788-32
-   * Component: USART Version: 2.6.0
    * Component: GPDMA Version: 1.2.0
    * Component: PIN Version: 1.0.0
+   * Component: USART Version: 2.6.0
    * Component: Startup Version: 1.0.0
 
 <h2>Collection of Component include folders:</h2>
-  C:\Users\TEMP.GEII2.004\Documents\ESE-Voiture-main\src\haut-parleurs\RTE
-  C:\Users\TEMP.GEII2.004\Documents\ESE-Voiture-main\src\haut-parleurs\RTE\Device\LPC1768
+  U:\haut-parleurs\RTE
+  U:\haut-parleurs\RTE\Device\LPC1768
   C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include
   C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include
   C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include
@@ -70,9 +78,6 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.3.0
 
-   * Component: Keil::CMSIS Driver:USART:2.6.0
-      Source file:   RTE_Driver\UART_LPC17xx.c
-
    * Component: Keil::Device:GPDMA:1.2.0
       Source file:   RTE_Driver\GPDMA_LPC17xx.c
       Include file:  RTE_Driver\GPDMA_LPC17xx.h
@@ -81,12 +86,15 @@ Package Vendor: Keil
       Include file:  RTE_Driver\PIN_LPC17xx.h
       Source file:   RTE_Driver\PIN_LPC17xx.c
 
+   * Component: Keil::CMSIS Driver:USART:2.6.0
+      Source file:   RTE_Driver\UART_LPC17xx.c
+
    * Component: Keil::Device:Startup:1.0.0
       Source file:   Device\Source\system_LPC17xx.c
-      Include file:  Device\Include\LPC17xx.h
-      Include file:  RTE_Driver\Config\RTE_Device.h
       Source file:   Device\Source\ARM\startup_LPC17xx.s
-Build Time Elapsed:  00:00:00
+      Include file:  RTE_Driver\Config\RTE_Device.h
+      Include file:  Device\Include\LPC17xx.h
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
