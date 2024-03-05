@@ -1,64 +1,26 @@
-/**
-  ******************************************************************************
-  * @file    Templates/Src/main.c 
-  * @author  MCD Application Team
-  * @brief   STM32F4xx HAL API Template project 
-  *
-  * @note    modified by ARM
-  *          The modifications allow to use this file as User Code Template
-  *          within the Device Family Pack.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
-  */
+//---------------------------------------------------------------------------------------------
+// Librairie des fonctions permettant l'utilisation de l'ultrason avec le STM32F4
+// IUT de Cachan
+// version : 05/03/2024 
+//---------------------------------------------------------------------------------------------
 
-/* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"                   // ARM::CMSIS:RTOS:Keil RTX
-
 #include "Driver_I2C.h"                 // ::CMSIS Driver:I2C
 #include "Driver_USART.h"               // ::CMSIS Driver:USART
-
 #include "Board_LED.h"                  // ::Board Support:LED
-
 #ifdef _RTE_
 #include "RTE_Components.h"             // Component selection
 #endif
 #ifdef RTE_CMSIS_RTOS2                  // when RTE component CMSIS RTOS2 is used
 #include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #endif
-
-
-
 #ifdef RTE_CMSIS_RTOS2_RTX5
+
 /**
   * Override default HAL_GetTick function
   */
+	
 uint32_t HAL_GetTick (void) {
   static uint32_t ticks = 0U;
          uint32_t i;
@@ -85,12 +47,7 @@ uint32_t HAL_GetTick (void) {
 /** @addtogroup Templates
   * @{
   */
-
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
+	
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 
@@ -114,8 +71,6 @@ void Init_I2C(void){
 	Driver_I2C1.PowerControl(ARM_POWER_FULL);
 	Driver_I2C1.Control(	ARM_I2C_BUS_SPEED,				// 2nd argument = débit
 							ARM_I2C_BUS_SPEED_STANDARD  );	// 100 kHz
-//	Driver_I2C1.Control(	ARM_I2C_BUS_CLEAR,
-//							0 );
 }
 
 
@@ -140,43 +95,17 @@ unsigned char read1byte (unsigned char composant, unsigned char registre){
 		Driver_I2C1.MasterReceive (composant, &registre, 1, false);		// false = avec stop
 		while (Driver_I2C1.GetStatus().busy == 1);	// attente fin transmission*/
 		return registre;
-	}		
-
-void capteur_ultrason_avant_gauche(){
-	char X1,X2;
-	write1byte(SLAVE_I2C_ADDR,0x00,0x51);
-	osDelay(70);
-	X1 = read1byte(SLAVE_I2C_ADDR,0x02);
-	X2 = read1byte(SLAVE_I2C_ADDR,0x03);
-}
-
-void capteur_ultrason_avant_droit(){
-	char X1,X2;
-	write1byte(SLAVE_I2C_ADDR1,0x00,0x51);
-	osDelay(70);
-	X1 = read1byte(SLAVE_I2C_ADDR1,0x02);
-	X2 = read1byte(SLAVE_I2C_ADDR1,0x03);
-}
-
+	}	
+	
+	
 int main(void)
 {
 	int i;
 	uint8_t chaine[20];
 	uint8_t tab[50];
 	unsigned char X1,X11,X12,X2,X21,X22,cap1,cap2,cap3; 
-//	unsigned char distance;
-	
-//  Init_UART();
+
 	Init_I2C();
-  /* STM32F4xx HAL library initialization:
-       - Configure the Flash prefetch, Flash preread and Buffer caches
-       - Systick timer is configured by default as source of time base, but user 
-             can eventually implement his proper time base source (a general purpose 
-             timer for example or other time source), keeping in mind that Time base 
-             duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
-             handled in milliseconds basis.
-       - Low Level Initialization
-     */
   HAL_Init();
 
   /* Configure the system clock to 168 MHz */
@@ -207,12 +136,14 @@ int main(void)
   while (1)
   {
 	
-	capteur_ultrason_avant_gauche();
-	capteur_ultrason_avant_droit();
-	/*
-	write1byte(SLAVE_I2C_ADDR,0x00,0x51);
+	write1byte(SLAVE_I2C_ADDR2,0x00,0x51);
 
+	
+	write1byte(SLAVE_I2C_ADDR,0x00,0x51);
+	//write1byte(SLAVE_I2C_ADDR1,0x00,0x51);
+	//write1byte(SLAVE_I2C_ADDR2,0x00,0x51);
 	osDelay(70);
+	
 	
 	  X1 = read1byte(SLAVE_I2C_ADDR,0x02);
 	  //X11 = read1byte(SLAVE_I2C_ADDR1,0x02);
@@ -227,10 +158,12 @@ int main(void)
 		
 		tab[0] = cap1;
 		tab[1] = cap2;
-		tab[2] = cap3;*/
+		tab[2] = cap3;
+
 
   }
 }
+
 
 /**
   * @brief  System Clock Configuration
