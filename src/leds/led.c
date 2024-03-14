@@ -120,6 +120,49 @@ void mySPI_callback(uint32_t event)
 	}
 }
 
+char* Pilotage_LED(char nbLed, char lumi, char bleu, char vert, char rouge, char tab[]){ // Fonction Configuration LED
+	int i = 0,mod;
+	if (nbLed ==0)
+	{
+		for(i=0;i<247;i++){
+			mod =i%4;
+			if (i<4) {tab[i] = 0x00;}
+			else if (i>=244) {tab[i] = 0xFF;}
+			else
+				{
+					if (mod ==0) {tab[i] = lumi;}
+					else if (mod ==1) {tab[i] = bleu;}
+					else if (mod ==2) {tab[i] = vert;}
+					else if  (mod ==3) {tab[i] = rouge;}
+}}}
+	else 
+	{
+		mod = nbLed*4;
+		tab[mod] = lumi;
+		tab[mod+1] = bleu;
+		tab[mod+2] = vert;
+		tab[mod+3] = rouge;
+	}
+	return tab;
+}
+
+void sendTab(char tab[]) { //Fonction Allumage LED
+	Driver_SPI1.Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_ACTIVE);
+	Driver_SPI1.Send(tab,248);
+	Driver_SPI1.Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
+}
+void Lum_init(void){ //Configuration registre ADC pour entrée AIN1 
+	int i = 0;
+	
+	RCC->APB2ENR |= (1<<8);
+	RCC->AHB1ENR |= (1<<0); //GPIOA
+
+	GPIOA->MODER |= (3<<2);  //PA1 en analog
+	
+	ADC1->SQR3 |= (1<<0);
+	ADC1->CR2 |= (1<<0);
+}
+
 void Init_SPI1(void){
 	Driver_SPI1.Initialize(NULL);		// Fonction callback à definir
 	Driver_SPI1.PowerControl(ARM_POWER_FULL);
@@ -131,20 +174,19 @@ void Init_SPI1(void){
 	Driver_SPI1.Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
 }
 
+short LectureADC(){
+	short valeur;
+	ADC1->CR2 |= (1<<30);
+	while((ADC1->SR & (1<<1))==0);
+	valeur = ADC1->DR;
+	return valeur;
+}
 /* Private functions ---------------------------------------------------------*/
 /**
   * @brief  Main program
   * @param  None
   * @retval None
   */
-void Configure_GPIO(void);
-void configure_ADC2_Channel_0(void);
-
-
-uint32_t Adc_value = 1;
-GPIO_InitTypeDef ADCpin; //create an instance of GPIO_InitTypeDef C struct
-ADC_ChannelConfTypeDef Channel_AN0; // create an instance of ADC_ChannelConfTypeDef
-ADC_HandleTypeDef myADC2Handle;
 
 
 int main(void)
@@ -160,7 +202,8 @@ int main(void)
        - Low Level Initialization
      */
   HAL_Init();
-
+	Init_SPI1();
+	Lum_init();
   /* Configure the system clock to 168 MHz */
   SystemClock_Config();
   SystemCoreClockUpdate();
@@ -169,12 +212,7 @@ int main(void)
      */
 	//#ifdef RTE_CMSIS_RTOS2
   /* Initialize CMSIS-RTOS2 */
-  osKernelInitialize ();
-	
-	Init_SPI1();
-	LED_Initialize ();
-	Configure_GPIO();
-	configure_ADC2_Channel_0();
+  osKernelInitialize ();	
   /* Create thread functions that start executing, 
   Example: osThreadNew(app_main, NULL, NULL); */
 	tid_mySPI_Thread = osThreadCreate ( osThread ( mySPI_Thread ), NULL ) ;
@@ -211,33 +249,9 @@ int main(void)
   * @param  None
   * @retval None
   */
-void Configure_GPIO(void)
-{
-	GPIO_InitTypeDef ADCpin; //create an instance of GPIO_InitTypeDef C struct
-	ADCpin.Pin = GPIO_PIN_0; // Select pin PA0
-	ADCpin.Mode = GPIO_MODE_ANALOG; // Select Analog Mode
-	ADCpin.Pull = GPIO_NOPULL; // Disable internal pull-up or pull-down resistor
-	HAL_GPIO_Init(GPIOA, &ADCpin); // initialize PA0 as analog input pin
-}
 
-void configure_ADC2_Channel_0(void)
-{
-__HAL_RCC_ADC2_CLK_ENABLE(); // enable clock to ADC2 module
-	myADC2Handle.Instance = ADC1; // create an instance of ADC2
-	myADC2Handle.Init.Resolution = ADC_RESOLUTION_10B; // select 10-bit resolution 
-	myADC2Handle.Init.EOCSelection = ADC_EOC_SINGLE_CONV; //select  single conversion as a end of conversion event
-	myADC2Handle.Init.DataAlign = ADC_DATAALIGN_RIGHT; // set digital output data right justified
-	myADC2Handle.Init.ClockPrescaler =ADC_CLOCK_SYNC_PCLK_DIV8; 
-	HAL_ADC_Init(&myADC2Handle); // initialize AD2 with myADC2Handle configuration settings
-	
-  /*select ADC2 channel */
-	Channel_AN0.Channel = ADC_CHANNEL_1; // select analog channel 0
-	Channel_AN0.Rank = 1; // set rank to 1
-	Channel_AN0.SamplingTime = ADC_SAMPLETIME_15CYCLES; // set sampling time to 15 clock cycles
-	HAL_ADC_ConfigChannel(&myADC2Handle, &Channel_AN0); // select channel_0 for ADC2 module. 
-}
 
-void Allumage_LED(char nb_led){ //Fonction d'allumage 
+/*void Allumage_LED(char nb_led){ //Fonction d'allumage 
 	char tab[248];	
 int i, j;
 	for(i=0;i<4;i++){
@@ -248,23 +262,15 @@ int i, j;
 		tab[(j*4)+2]= 0xFF; //B
 		tab[(j*4)+3]= 0x0A; //R
 	}
-				Driver_SPI1.Send(tab,(nb_led*4)+8);
+			Driver_SPI1.Send(tab,(nb_led*4)+8);
 		//HAL_ADC_Stop(&myADC2Handle); // stop conversion 
 		osDelay(200);
-}		
+}	*/	
 void mySPI_Thread (void const *argument) {
-	osEvent evt;
-	/*char tab[28]={0,0,0,0
-	,0xFF,0xD6,0xFF,0x0A
-	,0xFF,0xD6,0xFF,0x0A
-,0xFF,0xD6,0xFF,0x0A
-,0xFF,0xD6,0xFF,0x0A
-,0xFF,0xFF,0xFF,0xFF};*/	// Exemple tableau	
-	//int i, nb_led;
-	
+	osEvent evt;	
 	// Fabriquer tableau 
-	
-  while (1) {
+		char valeur[248];
+		while (1) {
 	  /*HAL_ADC_Start(&myADC2Handle); // start A/D conversion
 		if(HAL_ADC_PollForConversion(&myADC2Handle, 5) == HAL_OK) //check if conversion is completed
 		{
@@ -274,10 +280,15 @@ void mySPI_Thread (void const *argument) {
 		
 		}
 		if (Adc_value < 3000 ) Allumage_LED(0);
-		else */Allumage_LED(59);
+		else */
 		//Driver_SPI1.Send(tab,24);
 		//evt = osSignalWait(0x01, osWaitForever);	// sommeil fin emission		
 		//HAL_ADC_Stop(&myADC2Handle); // stop conversion 
+				if (LectureADC() >= 2000 ) {
+				sendTab(Pilotage_LED(0,0xFF,0xFF,0x00,0x00,valeur));}
+				else {
+				sendTab(Pilotage_LED(0,0xFF,0x00,0xFF,0x00,valeur));
+				}
 		osDelay(100);
 						
   }
