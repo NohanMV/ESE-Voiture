@@ -53,6 +53,8 @@
 #include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #endif
 
+#define SLAVE 0x72
+
 //#include "ultrason.h"
 
 #ifdef RTE_CMSIS_RTOS2_RTX5
@@ -142,27 +144,8 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-	capteur_ultrason_avant(tab_valeur_avant);
-	//capteur_ultrason_arriere(tab_valeur_arriere);
-
-	/*
-	write1byte(0x70,0x00,0xA0);
-	write1byte(0x70,0x00,0xAA);
-	write1byte(0x70,0x00,0xA5);
-	write1byte(0x70,0x00,0xEE);*/
-
-	
-	//write1byte(SLAVE_I2C_ADDR4,0x00,0x51);
-
-	//osDelay(70);
-	
-	//read1byte(SLAVE_I2C_ADDR3,0x02);
-	//read1byte(SLAVE_I2C_ADDR4,0x02);
-
-	//read1byte(SLAVE_I2C_ADDR3,0x03);
-	//read1byte(SLAVE_I2C_ADDR1,0x03);
-
-
+	capteur_ultrason_avant(tab_valeur_avant); //fonction pour les capteurs avant
+	capteur_ultrason_arriere(tab_valeur_arriere); //fonction pour les capteurs arrière
 
   }
 }

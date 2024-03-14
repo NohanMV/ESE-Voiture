@@ -12,13 +12,13 @@
 #define SLAVE_I2C_ADDR1       0x71			// Adresse esclave sur 7 bits
 #define SLAVE_I2C_ADDR2       0x75			// Adresse esclave sur 7 bits
 #define SLAVE_I2C_ADDR3       0x76			// Adresse esclave sur 7 bits
-#define SLAVE_I2C_ADDR4       0x77			// Adresse esclave sur 7 bits
+#define SLAVE_I2C_ADDR4       0x72			// Adresse esclave sur 7 bits
 
 extern ARM_DRIVER_I2C Driver_I2C1;
 
 uint8_t DeviceAddr;
 
-void Init_I2C(void){
+void Init_I2C(void){ // fonction d'initialisation des drivers I2C
 	Driver_I2C1.Initialize(NULL);
 	Driver_I2C1.PowerControl(ARM_POWER_FULL);
 	Driver_I2C1.Control(	ARM_I2C_BUS_SPEED,				// 2nd argument = débit
@@ -47,7 +47,7 @@ unsigned char read1byte (unsigned char composant, unsigned char registre){
 		return registre;
 	}	
 	
-void capteur_ultrason_avant(char *tab){
+void capteur_ultrason_avant(char *tab){ //fonction pour les capteurs avant
 
 		char cap_avant_gauche,cap_avant_milieu,cap_avant_droit;
 		char X1_gauche,X2_gauche,X1_milieu,X2_milieu,X1_droit,X2_droit;
@@ -59,44 +59,44 @@ void capteur_ultrason_avant(char *tab){
 
 		osDelay(70);
 	
-	  X1_gauche=read1byte(SLAVE_I2C_ADDR,0x02);
-	  X1_milieu=read1byte(SLAVE_I2C_ADDR1,0x02);
-		X1_droit=read1byte(SLAVE_I2C_ADDR2,0x02);
+	  X1_gauche=read1byte(SLAVE_I2C_ADDR,0x02); //lecture bit de point faible du capteurs avant gauche
+	  X1_milieu=read1byte(SLAVE_I2C_ADDR1,0x02); //lecture bit de point faible du capteurs avant milieu
+		X1_droit=read1byte(SLAVE_I2C_ADDR2,0x02); //lecture bit de point faible du capteurs avant droit
 
-		X2_gauche=read1byte(SLAVE_I2C_ADDR,0x03);
-	  X2_milieu=read1byte(SLAVE_I2C_ADDR1,0x03);
-		X2_droit=read1byte(SLAVE_I2C_ADDR2,0x03);
+		X2_gauche=read1byte(SLAVE_I2C_ADDR,0x03); //lecture bit de point fort du capteurs avant gauche
+	  X2_milieu=read1byte(SLAVE_I2C_ADDR1,0x03); //lecture bit de point fort du capteurs avant milieu
+		X2_droit=read1byte(SLAVE_I2C_ADDR2,0x03); //lecture bit de point fort du capteurs avant droit
 		
-		cap_avant_gauche = X1_gauche<<8| X2_gauche;
-		cap_avant_milieu = X1_milieu<<8| X2_milieu;
-		cap_avant_droit = X1_droit<<8| X2_droit;
+		cap_avant_gauche = X1_gauche<<8| X2_gauche; //décalage de 8 bits pour mettre les bits poids faible et fort sur un char
+		cap_avant_milieu = X1_milieu<<8| X2_milieu; //décalage de 8 bits pour mettre les bits poids faible et fort sur un char
+		cap_avant_droit = X1_droit<<8| X2_droit; //décalage de 8 bits pour mettre les bits poids faible et fort sur un char
 		
-		tab[0] = cap_avant_gauche;
-		tab[1] = cap_avant_milieu;
-		tab[2] = cap_avant_droit;
+		tab[0] = cap_avant_gauche; //sauvegarde de la valeur dans un tableau
+		tab[1] = cap_avant_milieu; //sauvegarde de la valeur dans un tableau
+		tab[2] = cap_avant_droit; //sauvegarde de la valeur dans un tableau
 	
 }
 
-void capteur_ultrason_arriere(char *tab){
+void capteur_ultrason_arriere(char *tab){ //fonction pour les capteurs arrière
 
 		char cap_avant_gauche,cap_avant_droit;
 		char X1_gauche,X2_gauche,X1_droit,X2_droit;
 	
 
-		write1byte(SLAVE_I2C_ADDR3,0x00,0x51);
-		write1byte(SLAVE_I2C_ADDR4,0x00,0x51);
+		write1byte(SLAVE_I2C_ADDR3,0x00,0x51); //écriture capteur arrière gauche en cm
+		write1byte(SLAVE_I2C_ADDR4,0x00,0x51); //écriture capteur arrière droit en cm
 
 		osDelay(70);
 	
-	  X1_gauche=read1byte(SLAVE_I2C_ADDR,0x02);
-		X1_droit=read1byte(SLAVE_I2C_ADDR2,0x02);
-		X2_gauche=read1byte(SLAVE_I2C_ADDR,0x03);
-		X2_droit=read1byte(SLAVE_I2C_ADDR2,0x03);
+	  X1_gauche=read1byte(SLAVE_I2C_ADDR3,0x02); //lecture bit de point faible du capteurs arrière gauche
+		X1_droit=read1byte(SLAVE_I2C_ADDR4,0x02); //lecture bit de point faible du capteurs arrière droit
+		X2_gauche=read1byte(SLAVE_I2C_ADDR3,0x03); //lecture bit de point fort du capteurs arrière gauche
+		X2_droit=read1byte(SLAVE_I2C_ADDR4,0x03); //lecture bit de point fort du capteurs arrière droit
 		
-		cap_avant_gauche = X1_gauche<<8| X2_gauche;
-		cap_avant_droit = X1_droit<<8| X2_droit;
+		cap_avant_gauche = X1_gauche<<8| X2_gauche; //décalage de 8 bits pour mettre les bits poids faible et fort sur un char
+		cap_avant_droit = X1_droit<<8| X2_droit; //décalage de 8 bits pour mettre les bits poids faible et fort sur un char
 		
-		tab[0] = cap_avant_gauche;
-		tab[1] = cap_avant_droit;
+		tab[0] = cap_avant_gauche; //sauvegarde de la valeur dans un tableau
+		tab[1] = cap_avant_droit; //sauvegarde de la valeur dans un tableau
 	
 }
