@@ -130,7 +130,7 @@ unsigned char read1byte(unsigned char composant, unsigned char registre)    //Le
 	void datasend(uint8_t x,uint8_t y,uint8_t cz)
 {
 	uint8_t dataBuffer[3];
-	dataBuffer[0] = x;
+		dataBuffer[0] = x;
 		dataBuffer[1] = y;
 		dataBuffer[2] = cz;
 	
@@ -195,8 +195,8 @@ int main(void)
 		Y = read1byte(SLAVE_I2C_ADDR, 0x01);  // lecture Y
 		CZ= read1byte(SLAVE_I2C_ADDR, 0x05);  // lecture boutons C et Z
 		
-		datasend(X,Y,CZ);
-		for(i = 0; i<1000000; i++){}
+		datasend(X,Y,CZ);											//Envoie sur UART2 (TX - PA2	RX - PA3)
+		for(i = 0; i<1000000; i++){}					//Tempo
 		//X et Y sur 8bits  de (00 à FF)
 	}
 }
