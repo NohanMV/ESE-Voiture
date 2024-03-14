@@ -17,24 +17,25 @@ Library Manager: ArmAr.exe V5.06 update 1 (build 61)
 Hex Converter:   FromElf.exe V5.06 update 1 (build 61)
 CPU DLL:         SARMCM3.DLL V5.17
 Dialog DLL:      DCM.DLL V1.13.4.0
-Target DLL:      UL2CM3.DLL V1.156.1.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V2.0.18.0
 Dialog DLL:      TCM.DLL V1.14.6.0
  
 <h2>Project:</h2>
-U:\Projet_S4\led_SANS_RTOS\Sans_RTOS.uvprojx
+U:\Projet_S4\leds no rtos\Sans_RTOS.uvprojx
 Project File Date:  03/14/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
 compiling main.c...
-main.c(61): warning:  #1-D: last line of file ends without a newline
+main.c(43): warning:  #177-D: variable "i" was declared but never referenced
+  	int i = 0;
+main.c(131): warning:  #1-D: last line of file ends without a newline
   }
-main.c: 1 warning, 0 errors
-compiling adc_F4.c...
+main.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=7616 RO-data=592 RW-data=16 ZI-data=1752  
-".\Objects\Sans_RTOS.axf" - 0 Error(s), 1 Warning(s).
+Program Size: Code=5704 RO-data=592 RW-data=16 ZI-data=1680  
+".\Objects\Sans_RTOS.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -47,23 +48,23 @@ Package Vendor: ARM
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.MDK-Middleware.7.0.0.pack
-                ::Board Support:Buttons:1.00 (API)
+                ::Board Support:LED:1.00 (API)
                 Keil MDK-ARM Professional Middleware for ARM Cortex-M based devices
-   * Component: Buttons Version: 1.00
    * Component: LED Version: 1.00
+   * Component: Buttons Version: 1.00
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.14.0.pack
-                Keil::Device:STM32Cube HAL:Common:1.7.6
+                Keil::Device:STM32Cube Framework:Classic:1.7.6
                 STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
+   * Component: Classic Version: 1.7.6
+   * Component: DMA Version: 1.7.6
+   * Component: Startup Version: 2.6.3
+   * Component: STM32Cube Framework Version: 1.0.0
+   * Component: Cortex Version: 1.7.6
    * Component: Common Version: 1.7.6
    * Component: GPIO Version: 1.7.6
-   * Component: STM32Cube Framework Version: 1.0.0
    * Component: ADC Version: 1.7.6
-   * Component: DMA Version: 1.7.6
-   * Component: Cortex Version: 1.7.6
-   * Component: Classic Version: 1.7.6
-   * Component: Startup Version: 2.6.3
    * Component: PWR Version: 1.7.6
    * Component: RCC Version: 1.7.6
    * Component: SPI Version: 1.7.6
@@ -72,8 +73,8 @@ Package Vendor: Keil
    * Component: Buttons Version: 1.0.0
 
 <h2>Collection of Component include folders:</h2>
-  U:\Projet_S4\led_SANS_RTOS\RTE
-  U:\Projet_S4\led_SANS_RTOS\RTE\Device\STM32F407VGTx
+  U:\Projet_S4\leds no rtos\RTE
+  U:\Projet_S4\leds no rtos\RTE\Device\STM32F407VGTx
   C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include
   C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include
   C:\Keil_v5\ARM\PACK\Keil\MDK-Middleware\7.0.0\Board
@@ -87,11 +88,38 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.3.0
 
+   * Component: ::Board Support:LED:1.00 (API)
+      Include file:  Board\Board_LED.h
+
    * Component: ::Board Support:Buttons:1.00 (API)
       Include file:  Board\Board_Buttons.h
 
-   * Component: ::Board Support:LED:1.00 (API)
-      Include file:  Board\Board_LED.h
+   * Component: Keil::Device:STM32Cube Framework:Classic:1.7.6
+      Include file:  MDK\Templates\Inc\stm32f4xx_hal_conf.h
+      Include file:  MDK\Templates\Inc\stm32f4xx_it.h
+      Include file:  MDK\Templates_LL\Inc\main.h
+      Source file:   MDK\Templates_LL\Src\main.c
+      Include file:  CMSIS\Driver\Config\RTE_Device.h
+      Source file:   MDK\Templates\Src\stm32f4xx_it.c
+      Source file:   MDK\Templates\Src\stm32f4xx_hal_msp.c
+      Include file:  MDK\Templates\Inc\main.h
+      Source file:   MDK\Templates\Src\main.c
+
+   * Component: Keil::Device:STM32Cube HAL:DMA:1.7.6
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma.c
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c
+
+   * Component: Keil::Device:Startup:2.6.3
+      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
+      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
+
+   * Component: ::Device:STM32Cube Framework:1.0.0 (API)
+
+   * Component: Keil::Device:STM32Cube HAL:Cortex:1.7.6
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.c
 
    * Component: Keil::Device:STM32Cube HAL:Common:1.7.6
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c
@@ -100,40 +128,13 @@ Package Vendor: Keil
    * Component: Keil::Device:STM32Cube HAL:GPIO:1.7.6
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_gpio.c
 
-   * Component: ::Device:STM32Cube Framework:1.0.0 (API)
-
    * Component: Keil::Device:STM32Cube HAL:ADC:1.7.6
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc.c
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc_ex.c
 
-   * Component: Keil::Device:STM32Cube HAL:DMA:1.7.6
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma.c
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c
-
-   * Component: Keil::Device:STM32Cube HAL:Cortex:1.7.6
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.c
-
-   * Component: Keil::Device:STM32Cube Framework:Classic:1.7.6
-      Source file:   MDK\Templates\Src\stm32f4xx_hal_msp.c
-      Include file:  MDK\Templates\Inc\stm32f4xx_it.h
-      Include file:  MDK\Templates\Inc\main.h
-      Source file:   MDK\Templates\Src\main.c
-      Include file:  MDK\Templates_LL\Inc\main.h
-      Include file:  MDK\Templates\Inc\stm32f4xx_hal_conf.h
-      Include file:  CMSIS\Driver\Config\RTE_Device.h
-      Source file:   MDK\Templates_LL\Src\main.c
-      Source file:   MDK\Templates\Src\stm32f4xx_it.c
-
-   * Component: Keil::Device:Startup:2.6.3
-      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
-      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
-      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
-      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
-      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
-
    * Component: Keil::Device:STM32Cube HAL:PWR:1.7.6
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr.c
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c
 
    * Component: Keil::Device:STM32Cube HAL:RCC:1.7.6
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c
@@ -150,7 +151,7 @@ Package Vendor: Keil
 
    * Component: Keil.STM32F429I-Discovery::Board Support:Buttons:1.0.0
       Source file:   MDK\Boards\ST\STM32F429I-Discovery\Common\Buttons_F429Discovery.c
-Build Time Elapsed:  00:00:07
+Build Time Elapsed:  00:00:06
 </pre>
 </body>
 </html>
