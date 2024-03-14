@@ -1,3 +1,4 @@
+
 #include "Driver_USART.h"               // ::CMSIS Driver:USART(API):USART
 #include "Board_LED.h"                  // ::Board Support:LED
 #include "GLCD_Config.h"                // Keil.MCB1700::Board Support:Graphic LCD
@@ -24,7 +25,7 @@ void delay(int milli) {
   for ( i = 0; i < (milli * 1000); i++);
 }
 
-int compare_tableaux(unsigned char tab1[], unsigned char tab2[], unsigned int taille) {
+int compare_tableaux(unsigned char *tab1, unsigned char *tab2, unsigned int taille) {
     int i;
     for (i = 0; i < taille ; i++) 
 		{
@@ -42,10 +43,13 @@ int compare_tableaux(unsigned char tab1[], unsigned char tab2[], unsigned int ta
 
 int main (void)
 {
-	unsigned char tab[6];
-	unsigned char soluce [6] = {0x0D,0x00,0x93,0x64,0x1B,0xE1};
-	unsigned char soluce1 [6] = {49, 03, 52, 49, 66, 69};
+	unsigned char tab[15];
+	unsigned char soluce [12] = {0x30,0x44,0x30,0x30,0x39,0x33,0x36,0x34,0x31,0x42,0x45,0x31}; 
+
 	char tabLCD[20];
+	int resultat;	
+	int i =0;
+	
 	
 	Init_UART();
 	LED_Initialize();
@@ -55,17 +59,23 @@ int main (void)
 	
 	while(1)
 	{
-		int resultat;
+
 //		Driver_USART1.Receive(tab,1);
 //		while(Driver_USART1.GetRxCount()<1); // attente buffer TX vide
-
-		Driver_USART1.Receive(tab, 6);
+	for (i=0; i < 14 ; i++)
+		{
+		Driver_USART1.Receive(tab+i, 1);
 		while(Driver_USART1.GetRxCount()<1);
-		sprintf(tabLCD, "%02d %02d %02d %02d %02d %02d", tab[0], tab[1], tab[2], tab[3], tab[4], tab[5]);
-		//GLCD_DrawString(0, 24, "X:");
+		}
+//		do {
+//			Driver_USART1.Receive(tab, 1);
+//			while(Driver_USART1.GetRxCount()<1);
+////		}                                        
+//		while(tab[0]!=0x02);
+		sprintf(tabLCD, "%02X %02X %02X %02X %02X %02X", tab[0], tab[1], tab[2], tab[3], tab[4], tab[5]);
 		GLCD_DrawString(10, 24, tabLCD);
 		//resultat=compare_tableaux(tab,soluce,6);
-		resultat=compare_tableaux(tab,soluce1,6);
+		resultat=compare_tableaux(tab+1,soluce,12);
 			if(resultat == 1) 
 			{
 				GLCD_DrawString(0, 0,"ca marche pas");

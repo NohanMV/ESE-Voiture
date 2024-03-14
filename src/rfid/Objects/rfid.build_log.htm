@@ -28,68 +28,72 @@ Project File Date:  03/14/2024
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Rebuild target 'LPC1768'
 compiling GLCD_Fonts.c...
-compiling LED_MCB1700.c...
 compiling main.c...
-main.c(64): warning:  #223-D: function "sprintf" declared implicitly
-  		sprintf(tabLCD, "%02d %02d %02d %02d %02d %02d", tab[0], tab[1], tab[2], tab[3], tab[4], tab[5]);
-main.c(90): warning:  #111-D: statement is unreachable
+main.c(75): warning:  #223-D: function "sprintf" declared implicitly
+  		sprintf(tabLCD, "%02X %02X %02X %02X %02X %02X", tab[0], tab[1], tab[2], tab[3], tab[4], tab[5]);
+main.c(101): warning:  #111-D: statement is unreachable
   	return 0;
-main.c(46): warning:  #177-D: variable "soluce" was declared but never referenced
-  	unsigned char soluce [6] = {0x0D,0x00,0x93,0x64,0x1B,0xE1};
-main.c: 3 warnings, 0 errors
+main.c: 2 warnings, 0 errors
+compiling LED_MCB1700.c...
 compiling GLCD_MCB1700.c...
-compiling UART_LPC17xx.c...
-compiling GPDMA_LPC17xx.c...
-compiling GPIO_LPC17xx.c...
-assembling startup_LPC17xx.s...
-compiling PIN_LPC17xx.c...
-compiling system_LPC17xx.c...
+compiling RTX_Conf_CM.c...
 compiling SSP_LPC17xx.c...
+compiling GPDMA_LPC17xx.c...
+compiling UART_LPC17xx.c...
+compiling GPIO_LPC17xx.c...
+compiling PIN_LPC17xx.c...
+assembling startup_LPC17xx.s...
+compiling system_LPC17xx.c...
 linking...
-Program Size: Code=16552 RO-data=7164 RW-data=52 ZI-data=860  
-".\Objects\rfid.axf" - 0 Error(s), 3 Warning(s).
+Program Size: Code=21224 RO-data=7308 RW-data=112 ZI-data=7808  
+".\Objects\rfid.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
 Package Vendor: ARM
                 http://www.keil.com/pack/ARM.CMSIS.5.6.0.pack
-                ::CMSIS Driver:USART:2.3.0 (API)
+                ::CMSIS:RTOS:1.0.0 (API)
                 CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: RTOS Version: 1.0.0
    * Component: USART Version: 2.3.0
    * Component: SPI Version: 2.2.0
    * Component: CORE Version: 5.3.0
+   * Component: Keil RTX Version: 4.82.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.LPC1700_DFP.2.4.0.pack
+                Keil::Device:GPIO:1.1.0
+                NXP LPC1700 Series Device Support, Drivers and Examples for MCB1700 and LPC1788-32
+   * Component: GPIO Version: 1.1.0
+   * Component: GPDMA Version: 1.2.0
+   * Component: PIN Version: 1.0.0
+   * Component: Startup Version: 1.0.0
+   * Component: Graphic LCD Version: 1.0.0
+   * Component: SSP Version: 2.7.0
+   * Component: LED Version: 1.0.0
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.MDK-Middleware.7.0.0.pack
                 ::Board Support:LED:1.00 (API)
                 Keil MDK-ARM Professional Middleware for ARM Cortex-M based devices
    * Component: LED Version: 1.00
-   * Component: Graphic LCD Version: 1.00
-
-Package Vendor: Keil
-                http://www.keil.com/pack/Keil.LPC1700_DFP.2.4.0.pack
-                Keil.MCB1700::Board Support:Graphic LCD:1.0.0
-                NXP LPC1700 Series Device Support, Drivers and Examples for MCB1700 and LPC1788-32
-   * Component: Graphic LCD Version: 1.0.0
-   * Component: Startup Version: 1.0.0
-   * Component: SSP Version: 2.7.0
-   * Component: GPIO Version: 1.1.0
-   * Component: PIN Version: 1.0.0
-   * Component: GPDMA Version: 1.2.0
    * Component: USART Version: 2.6.0
-   * Component: LED Version: 1.0.0
+   * Component: Graphic LCD Version: 1.00
 
 <h2>Collection of Component include folders:</h2>
   C:\Users\TEMP.GEII2.005\Desktop\ESE-Voiture-main\ESE-Voiture-main\src\rfid\RTE
   C:\Users\TEMP.GEII2.005\Desktop\ESE-Voiture-main\ESE-Voiture-main\src\rfid\RTE\Device\LPC1768
   C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include
   C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include
+  C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\RTOS\RTX\INC
   C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Boards\Keil\MCB1700\Common
   C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include
   C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver
   C:\Keil_v5\ARM\PACK\Keil\MDK-Middleware\7.0.0\Board
 
 <h2>Collection of Component Files used:</h2>
+
+   * Component: ::CMSIS:RTOS:1.0.0 (API)
 
    * Component: ::CMSIS Driver:USART:2.3.0 (API)
       Include file:  CMSIS\Driver\Include\Driver_USART.h
@@ -99,43 +103,58 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.3.0
 
-   * Component: ::Board Support:LED:1.00 (API)
-      Include file:  Board\Board_LED.h
-
-   * Component: ::Board Support:Graphic LCD:1.00 (API)
-      Include file:  Board\Board_GLCD.h
-
-   * Component: Keil.MCB1700::Board Support:Graphic LCD:1.0.0
-      Source file:   Boards\Keil\MCB1700\Common\GLCD_MCB1700.c
-      Include file:  Boards\Keil\MCB1700\Common\GLCD_Config.h
-      Source file:   Boards\Keil\MCB1700\Common\GLCD_Fonts.c
-
-   * Component: Keil::Device:Startup:1.0.0
-      Include file:  Device\Include\LPC17xx.h
-      Source file:   Device\Source\system_LPC17xx.c
-      Source file:   Device\Source\ARM\startup_LPC17xx.s
-      Include file:  RTE_Driver\Config\RTE_Device.h
-
-   * Component: Keil::CMSIS Driver:SPI:SSP:2.7.0
-      Source file:   RTE_Driver\SSP_LPC17xx.c
+   * Component: ARM::CMSIS:RTOS:Keil RTX:4.82.0
+      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
+      Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+      Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
+      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
+      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
 
    * Component: Keil::Device:GPIO:1.1.0
       Include file:  RTE_Driver\GPIO_LPC17xx.h
       Source file:   RTE_Driver\GPIO_LPC17xx.c
 
+   * Component: Keil::Device:GPDMA:1.2.0
+      Source file:   RTE_Driver\GPDMA_LPC17xx.c
+      Include file:  RTE_Driver\GPDMA_LPC17xx.h
+
    * Component: Keil::Device:PIN:1.0.0
       Source file:   RTE_Driver\PIN_LPC17xx.c
       Include file:  RTE_Driver\PIN_LPC17xx.h
 
-   * Component: Keil::Device:GPDMA:1.2.0
-      Include file:  RTE_Driver\GPDMA_LPC17xx.h
-      Source file:   RTE_Driver\GPDMA_LPC17xx.c
+   * Component: Keil::Device:Startup:1.0.0
+      Include file:  Device\Include\LPC17xx.h
+      Source file:   Device\Source\ARM\startup_LPC17xx.s
+      Source file:   Device\Source\system_LPC17xx.c
+      Include file:  RTE_Driver\Config\RTE_Device.h
+
+   * Component: Keil.MCB1700::Board Support:Graphic LCD:1.0.0
+      Source file:   Boards\Keil\MCB1700\Common\GLCD_MCB1700.c
+      Source file:   Boards\Keil\MCB1700\Common\GLCD_Fonts.c
+      Include file:  Boards\Keil\MCB1700\Common\GLCD_Config.h
+
+   * Component: Keil::CMSIS Driver:SPI:SSP:2.7.0
+      Source file:   RTE_Driver\SSP_LPC17xx.c
+
+   * Component: Keil.MCB1700::Board Support:LED:1.0.0
+      Source file:   Boards\Keil\MCB1700\Common\LED_MCB1700.c
+
+   * Component: ::Board Support:LED:1.00 (API)
+      Include file:  Board\Board_LED.h
 
    * Component: Keil::CMSIS Driver:USART:2.6.0
       Source file:   RTE_Driver\UART_LPC17xx.c
 
-   * Component: Keil.MCB1700::Board Support:LED:1.0.0
-      Source file:   Boards\Keil\MCB1700\Common\LED_MCB1700.c
+   * Component: ::Board Support:Graphic LCD:1.00 (API)
+      Include file:  Board\Board_GLCD.h
 Build Time Elapsed:  00:00:02
 </pre>
 </body>

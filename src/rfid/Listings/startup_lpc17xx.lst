@@ -435,13 +435,14 @@ ork --depend=.\objects\startup_lpc17xx.d -o.\objects\startup_lpc17xx.o -IC:\Use
 rs\TEMP.GEII2.005\Desktop\ESE-Voiture-main\ESE-Voiture-main\src\rfid\RTE -IC:\U
 sers\TEMP.GEII2.005\Desktop\ESE-Voiture-main\ESE-Voiture-main\src\rfid\RTE\Devi
 ce\LPC1768 -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include -IC:\Keil_v
-5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include -IC:\Keil_v5\ARM\PACK\Keil\LPC1
-700_DFP\2.4.0\Boards\Keil\MCB1700\Common -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP
-\2.4.0\Device\Include -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver -
-IC:\Keil_v5\ARM\PACK\Keil\MDK-Middleware\7.0.0\Board --predefine="__EVAL SETA 1
-" --predefine="__UVISION_VERSION SETA 517" --predefine="_RTE_ SETA 1" --predefi
-ne="LPC175x_6x SETA 1" --list=.\listings\startup_lpc17xx.lst RTE\Device\LPC1768
-\startup_LPC17xx.s
+5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS
+\5.6.0\CMSIS\RTOS\RTX\INC -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Boards\K
+eil\MCB1700\Common -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include 
+-IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver -IC:\Keil_v5\ARM\PACK\K
+eil\MDK-Middleware\7.0.0\Board --predefine="__RTX SETA 1" --predefine="__EVAL S
+ETA 1" --predefine="__UVISION_VERSION SETA 517" --predefine="_RTE_ SETA 1" --pr
+edefine="LPC175x_6x SETA 1" --list=.\listings\startup_lpc17xx.lst RTE\Device\LP
+C1768\startup_LPC17xx.s
 
 
 
@@ -1094,4 +1095,4 @@ Symbol: __use_two_region_memory
       None
 Comment: __use_two_region_memory unused
 3 symbols
-404 symbols in table
+405 symbols in table
