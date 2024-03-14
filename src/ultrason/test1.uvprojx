@@ -421,6 +421,11 @@
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
             </File>
+            <File>
+              <FileName>ultrason.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ultrason.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
