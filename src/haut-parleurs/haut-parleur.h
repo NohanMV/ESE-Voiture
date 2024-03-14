@@ -1,10 +1,11 @@
-#define DEMARAGE         0x01
-#define ACCELERATION     0x02
-#define DECELERATION     0x03
-#define DEVEROUILLAGE    0x04
-#define ALARME           0x05
-#define CLIGNOTANT       0x06
-#define BIPBIP           0x07
+#define DEMARAGE         0x01  //Durée 6sec
+#define ACCELERATION     0x02 // Durée 9sec
+#define DECELERATION     0x03 // Durée 9sec
+#define DEVEROUILLAGE    0x04	// Durée 1sec
+#define ALARME           0x05	// Durée 29sec
+#define CLIGNOTANT       0x06	// Durée 2sec
+#define BIPBIP           0x07	// Durée 6sec
+#define SONLEO					 0x08 // Durée 1sec
 
 #define LECTURE		 0x0F
 
