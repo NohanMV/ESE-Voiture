@@ -1,0 +1,48 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.17.0.0
+Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: iut cachan, iut cachan, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.17
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 1 (build 61)
+Assembler:       Armasm.exe V5.06 update 1 (build 61)
+Linker/Locator:  ArmLink.exe V5.06 update 1 (build 61)
+Library Manager: ArmAr.exe V5.06 update 1 (build 61)
+Hex Converter:   FromElf.exe V5.06 update 1 (build 61)
+CPU DLL:         SARMCM3.DLL V5.17
+Dialog DLL:      DARMP1.DLL V1.25.0.0
+Target DLL:      UL2CM3.DLL V1.156.1.0
+Dialog DLL:      TARMP1.DLL V1.24.0.0
+ 
+<h2>Project:</h2>
+C:\Etudiants\testProject.uvproj
+Project File Date:  06/13/2022
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Target 1'
+compiling main.c...
+main.c(54): warning:  #111-D: statement is unreachable
+  	return 0;
+main.c(17): warning:  #177-D: variable "a" was declared but never referenced
+  	unsigned char  a='a';
+main.c(18): warning:  #177-D: variable "ptr" was declared but never referenced
+  	unsigned char* ptr = (unsigned char*) &bp;
+main.c(19): warning:  #177-D: variable "i" was declared but never referenced
+  	int i=0;
+main.c(20): warning:  #177-D: variable "chenillard" was declared but never referenced
+  	int chenillard=0;
+main.c: 5 warnings, 0 errors
+linking...
+Program Size: Code=812 RO-data=276 RW-data=0 ZI-data=608  
+".\Objects\testProject.axf" - 0 Error(s), 5 Warning(s).
+Build Time Elapsed:  00:00:00
+</pre>
+</body>
+</html>
