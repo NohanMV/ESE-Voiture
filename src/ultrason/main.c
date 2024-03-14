@@ -42,8 +42,8 @@
 #include "cmsis_os.h"                   // ARM::CMSIS:RTOS:Keil RTX
 
 #include "Driver_I2C.h"                 // ::CMSIS Driver:I2C
-#include "Driver_USART.h"               // ::CMSIS Driver:USART
 
+#include "ultrason.h"
 #include "Board_LED.h"                  // ::Board Support:LED
 
 #ifdef _RTE_
@@ -54,6 +54,15 @@
 #endif
 
 
+
+#define SLAVE 0x72
+
+
+osThreadId ID_TacheCapteurAvant ;
+osThreadId ID_TacheCapteurArriere ;
+
+void TacheCapteurAvant (void const * argument);
+void TacheCapteurArriere (void const * argument);
 
 #ifdef RTE_CMSIS_RTOS2_RTX5
 /**
@@ -101,84 +110,35 @@ static void Error_Handler(void);
   * @retval None
   */
 	
-#define SLAVE_I2C_ADDR       0x70	// Adresse esclave sur 7 bits
-#define SLAVE_I2C_ADDR1       0x71			// Adresse esclave sur 7 bits
-#define SLAVE_I2C_ADDR2       0x75			// Adresse esclave sur 7 bits
+	
 
 extern ARM_DRIVER_I2C Driver_I2C1;
 
-uint8_t DeviceAddr;
-
-void Init_I2C(void){
-	Driver_I2C1.Initialize(NULL);
-	Driver_I2C1.PowerControl(ARM_POWER_FULL);
-	Driver_I2C1.Control(	ARM_I2C_BUS_SPEED,				// 2nd argument = débit
-							ARM_I2C_BUS_SPEED_STANDARD  );	// 100 kHz
-//	Driver_I2C1.Control(	ARM_I2C_BUS_CLEAR,
-//							0 );
+void TacheCapteurAvant (void const * argument){
+	char tab_valeur_avant[3];
+	while(1){
+      capteur_ultrason_avant(tab_valeur_avant); //fonction pour les capteurs avant
+      }
+osDelay(70);
 }
-
-
-
-void write1byte(unsigned char composant, unsigned char registre, unsigned char valeur){
-		uint8_t tab[10], maValeur;
-		tab[0] = registre;
-		tab[1] = valeur;
-		// Ecriture vers registre esclave : START + ADDR(W) + 1W_DATA + 1W_DATA + STOP
-		Driver_I2C1.MasterTransmit (composant, tab, 2, false);		// false = avec stop
-		while (Driver_I2C1.GetStatus().busy == 1);	// attente fin transmission
-}
-
-unsigned char read1byte (unsigned char composant, unsigned char registre){
-		uint8_t tab[10];
-		tab[0] = registre;
-		// Ecriture vers registre esclave : START + ADDR(W) + 1W_DATA + 1W_DATA + STOP
-		Driver_I2C1.MasterTransmit (composant,tab, 1, true);		// true = sans stop
-		while (Driver_I2C1.GetStatus().busy == 1);	// attente fin transmission
-
-	// Lecture de data esclave : START + ADDR(R) + 1R_DATA + STOP
-		Driver_I2C1.MasterReceive (composant, &registre, 1, false);		// false = avec stop
-		while (Driver_I2C1.GetStatus().busy == 1);	// attente fin transmission*/
-		return registre;
-	}		
-
-void capteur_ultrason_avant_gauche(){
-	char X1,X2;
-	write1byte(SLAVE_I2C_ADDR,0x00,0x51);
+	
+void TacheCapteurArriere (void const * argument){
+  char tab_valeur_arriere[3];
+  while(1){
+				capteur_ultrason_arriere(tab_valeur_arriere); //fonction pour les capteurs arrière
+          }
 	osDelay(70);
-	X1 = read1byte(SLAVE_I2C_ADDR,0x02);
-	X2 = read1byte(SLAVE_I2C_ADDR,0x03);
-}
-
-void capteur_ultrason_avant_droit(){
-	char X1,X2;
-	write1byte(SLAVE_I2C_ADDR1,0x00,0x51);
-	osDelay(70);
-	X1 = read1byte(SLAVE_I2C_ADDR1,0x02);
-	X2 = read1byte(SLAVE_I2C_ADDR1,0x03);
-}
-
+ }
+ 
+ osThreadDef (TacheCapteurAvant,osPriorityAboveNormal,1,0);
+ osThreadDef (TacheCapteurArriere,osPriorityAboveNormal,1,0);
+	
 int main(void)
 {
-	int i;
-	uint8_t chaine[20];
-	uint8_t tab[50];
-	unsigned char X1,X11,X12,X2,X21,X22,cap1,cap2,cap3; 
-//	unsigned char distance;
-	
-//  Init_UART();
 	Init_I2C();
-  /* STM32F4xx HAL library initialization:
-       - Configure the Flash prefetch, Flash preread and Buffer caches
-       - Systick timer is configured by default as source of time base, but user 
-             can eventually implement his proper time base source (a general purpose 
-             timer for example or other time source), keeping in mind that Time base 
-             duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
-             handled in milliseconds basis.
-       - Low Level Initialization
-     */
   HAL_Init();
-
+	ID_TacheCapteurAvant = osThreadCreate ( osThread ( TacheCapteurAvant ), NULL ) ;
+  ID_TacheCapteurArriere = osThreadCreate ( osThread ( TacheCapteurArriere ), NULL ) ;
   /* Configure the system clock to 168 MHz */
   SystemClock_Config();
   SystemCoreClockUpdate();
@@ -200,36 +160,9 @@ int main(void)
   osKernelStart();
 	//LED_On (3);
 //#endif
-	//osDelay(osWaitForever);
+	osDelay(osWaitForever);
 	
-	
-  /* Infinite loop */
-  while (1)
-  {
-	
-	capteur_ultrason_avant_gauche();
-	capteur_ultrason_avant_droit();
-	/*
-	write1byte(SLAVE_I2C_ADDR,0x00,0x51);
 
-	osDelay(70);
-	
-	  X1 = read1byte(SLAVE_I2C_ADDR,0x02);
-	  //X11 = read1byte(SLAVE_I2C_ADDR1,0x02);
-	  //X12 = read1byte(SLAVE_I2C_ADDR2,0x02);
-	  X2 = read1byte(SLAVE_I2C_ADDR,0x03);
-	  //X21 = read1byte(SLAVE_I2C_ADDR1,0x03);
-	  //X22 = read1byte(SLAVE_I2C_ADDR2,0x03);
-	
-		cap1 = X1<<8| X2;
-		cap2 = X11<<8| X21;
-		cap3 = X12<<8| X22;
-		
-		tab[0] = cap1;
-		tab[1] = cap2;
-		tab[2] = cap3;*/
-
-  }
 }
 
 /**
