@@ -97,11 +97,13 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     case ID_BUTTON_0: // Notifications sent by 'Claxon'
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
-        // USER START (Optionally insert code for reacting on notification message)				
+        // USER START (Optionally insert code for reacting on notification message)	
+						variable=1;
         // USER END
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
+				variable=0;
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)

@@ -3,6 +3,7 @@
 #include "RTE_Components.h"             // Component selection
 #endif
 
+#include "Driver_CAN.h"                 // ::CMSIS Driver:CAN
 #include "stm32f7xx_hal.h"
 #include "stm32746g_discovery_sdram.h"
 #include "RTE_Components.h"
@@ -11,22 +12,23 @@
 #include "GUI.h"
 #include "stdio.h"
 #include "DIALOG.h"
-#include "Board_LED.h"                  // ::Board Support:LED
 #include "Driver_USART.h"               // ::CMSIS Driver:USART
+#ifdef RTE_CMSIS_RTOS_RTX
 
-osMutexId ID_UART7;				//creation mutex UART7
-osMutexDef (mut_UART7);
-
-extern ARM_DRIVER_USART Driver_USART7;
+extern ARM_DRIVER_USART Driver_USART6;
+extern   ARM_DRIVER_CAN         Driver_CAN1;
+extern uint32_t os_time;
 int variable;
 
-#ifdef RTE_CMSIS_RTOS_RTX
-extern uint32_t os_time;
+osThreadId id_CANthreadR;
+osThreadId id_CANthreadT;
 
 uint32_t HAL_GetTick(void) { 
   return os_time; 
 }
 #endif
+
+
 
 
 /*********************************************************************
@@ -37,20 +39,12 @@ Externals
 WM_HWIN CreateWindow(void);
 
 void Init_UART();
-/*
-void Thread_T (void const *argument);                             // thread function
-osThreadId tid_Thread_T;                                          // thread id
-osThreadDef (Thread_T, osPriorityNormal, 1, 0);                   // thread object
-
-void Thread_R (void const *argument);                             // thread function
-osThreadId tid_Thread_R;                                          // thread id
-osThreadDef (Thread_R, osPriorityNormal, 1, 0);                   // thread object
-*/
 
 /*----------------------------------------------------------------------------
  *      GUIThread: GUI Thread for Single-Task Execution Model
  *---------------------------------------------------------------------------*/
  
+
 void GUIThread (void const *argument);              // thread function
 osThreadId tid_GUIThread;                           // thread id
 osThreadDef (GUIThread, osPriorityIdle, 1, 2048);   // thread object
@@ -156,106 +150,152 @@ void GUIThread (void const *argument) {
 
 	WM_HWIN hDlg;
 	
-	MPU_Config ();
-	CPU_CACHE_Enable();                       /* Enable the CPU Cache           */
-  HAL_Init();                               /* Initialize the HAL Library     */
-  BSP_SDRAM_Init();                         /* Initialize BSP SDRAM           */
-  SystemClock_Config();                     /* Configure the System Clock     */
+	
 
   GUI_Init();
 	Touch_Initialize();
 	hDlg = CreateWindow();
-	
-	
-	Init_UART();  // init uart7
   while (1) {
-    
-
 		GUI_Exec();
 		GUI_Delay(10);
-		while(Driver_USART7.GetStatus().tx_busy==1);
-		Driver_USART7.Send("1",1);
-
-
 		
+		if (variable==1){
+			while(Driver_USART6.GetStatus().tx_busy==1);
+			Driver_USART6.Send("1",1);
+		}
 		GUI_X_ExecIdle();             /* Nothing left to do for the moment ... Idle processing */
   }
 }
-/*
-fonction de CallBack lancee si Event T ou R
-void event_UART7(uint32_t event)
-{
-	switch (event) {
-		
-		case ARM_USART_EVENT_RECEIVE_COMPLETE : 	
-			osSignalSet(tid_Thread_R, 0x01);
-			break;
-		
-		case ARM_USART_EVENT_SEND_COMPLETE  : 	
-			osSignalSet(tid_Thread_T, 0x02);
-			break;
-		
-		default : 
-			break;
-	}
+
+void myCAN1_callback(uint32_t obj_idx, uint32_t event){
+    switch (event)
+    {
+    case ARM_CAN_EVENT_RECEIVE:
+        /*  Message was received successfully by the obj_idx object. */
+       osSignalSet(id_CANthreadR, 0x01);
+        break;
+    
+		 case ARM_CAN_EVENT_SEND_COMPLETE:
+        /* 	Message was sent successfully by the obj_idx object.  */
+        osSignalSet(id_CANthreadT, 0x01);
+        break;
+				}
 }
-*/
+
+
+void InitCan1 (void) {
+	Driver_CAN1.Initialize(NULL,myCAN1_callback);
+	Driver_CAN1.PowerControl(ARM_POWER_FULL);
+	
+	Driver_CAN1.SetMode(ARM_CAN_MODE_INITIALIZATION);
+	Driver_CAN1.SetBitrate( ARM_CAN_BITRATE_NOMINAL,
+													125000,
+													ARM_CAN_BIT_PROP_SEG(5U)   |         // Set propagation segment to 5 time quanta
+                          ARM_CAN_BIT_PHASE_SEG1(1U) |         // Set phase segment 1 to 1 time quantum (sample point at 87.5% of bit time)
+                          ARM_CAN_BIT_PHASE_SEG2(1U) |         // Set phase segment 2 to 1 time quantum (total bit is 8 time quanta long)
+                          ARM_CAN_BIT_SJW(1U));                // Resynchronization jump width is same as phase segment 2
+	
+	// Mettre ici les filtres ID de réception sur objet 0
+	//....................................................
+	// Filtre objet 0 sur uniquement identifiant 0x0f6
+	//Driver_CAN1.ObjectSetFilter( 0, ARM_CAN_FILTER_ID_EXACT_ADD ,ARM_CAN_STANDARD_ID(0x128),0) ; // non nécessaire ici
+	
+	
+	Driver_CAN1.ObjectConfigure(0,ARM_CAN_OBJ_RX);				// Objet 0 du CAN1 pour réception
+	Driver_CAN1.ObjectConfigure(1,ARM_CAN_OBJ_RX);				// Objet 1 du CAN1 pour emission
+
+	Driver_CAN1.SetMode(ARM_CAN_MODE_NORMAL);					// fin init
+}
+
+
+
+
 void Init_UART(){
-	Driver_USART7.Initialize(NULL);
-	Driver_USART7.PowerControl(ARM_POWER_FULL);
-	Driver_USART7.Control(	ARM_USART_MODE_ASYNCHRONOUS |
+	Driver_USART6.Initialize(NULL);
+	Driver_USART6.PowerControl(ARM_POWER_FULL);
+	Driver_USART6.Control(	ARM_USART_MODE_ASYNCHRONOUS |
 							ARM_USART_FLOW_CONTROL_NONE   |
 							ARM_USART_DATA_BITS_8		|
 							ARM_USART_STOP_BITS_1		|
 							ARM_USART_PARITY_NONE		,							
 						9600);	
-	Driver_USART7.Control(ARM_USART_CONTROL_TX,1);
-	Driver_USART7.Control(ARM_USART_CONTROL_RX,1);
+	Driver_USART6.Control(ARM_USART_CONTROL_TX,1);
+	Driver_USART6.Control(ARM_USART_CONTROL_RX,1);
 }
-
-// Tache d'envoi UART
-
-
 
 /*********************************************************************
 *
 *       Main
 */
+
+
+
+void CANthreadT(void const *argument)
+{
+	ARM_CAN_MSG_INFO     tx_msg_info;
+	uint8_t data_buf[8];
+	while (1) {
+		tx_msg_info.id = ARM_CAN_STANDARD_ID(0x128);
+		
+		tx_msg_info.rtr = 0; // 0 = trame DATA
+		data_buf[0] = 0xFA; // data à envoyer à placer dans un tableau de char
+		Driver_CAN1.MessageSend(1, &tx_msg_info, data_buf, 8); // 1 data à envoyer
+		
+		//osSignalWait(0x01, osWaitForever);		// sommeil en attente fin emission
+		osDelay(100);
+	}		
+}
+
+void CANthreadR(void const *argument)
+{
+	ARM_CAN_MSG_INFO   rx_msg_info;
+	uint8_t data_buf[8];
+	uint8_t chaine[20];
+	uint8_t chaine1[20];
+	int identifiant , taille,i;
+	int retour;
+	
+	while(1)
+	{		
+	osSignalWait(0x01, osWaitForever);		// sommeil en attente réception
+		
+	Driver_CAN1.MessageRead(0, &rx_msg_info, data_buf, 8); // 8 data max
+	identifiant = rx_msg_info.id; // (int)
+	retour = data_buf[0] ; // 1ère donnée de la trame récupérée (char)
+	taille = rx_msg_info.dlc; // nb data (char)
+	
+	sprintf(chaine,"id = %x ",(short)identifiant) ;	
+	sprintf(chaine1,"data = %02x",(short)retour) ;
+	}
+}
+
+
+
+osThreadDef(CANthreadR,osPriorityNormal, 1,0);
+osThreadDef(CANthreadT,osPriorityNormal, 1,0);
+
+
 int main (void) {
+
+	MPU_Config ();
+	CPU_CACHE_Enable();                       /* Enable the CPU Cache           */
+  HAL_Init();                               /* Initialize the HAL Library     */
+  BSP_SDRAM_Init();                         /* Initialize BSP SDRAM           */
+  SystemClock_Config();                     /* Configure the System Clock     */
+	
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
-
-  // initialize peripherals here
-	LED_Initialize();		// pour modifier etat LED
-
-//	tid_Thread_T = osThreadCreate (osThread(Thread_T), NULL);
-//	tid_Thread_R = osThreadCreate (osThread(Thread_R), NULL);
+	
+	//Init peripherals
+	InitCan1();
+	Init_UART();
 	
   // create 'thread' functions that start executing,
   Init_GUIThread();
+	id_CANthreadR = osThreadCreate (osThread(CANthreadR), NULL);
+	id_CANthreadT = osThreadCreate (osThread(CANthreadT), NULL);
 
   osKernelStart ();                         // start thread execution 
   osDelay(osWaitForever);
 }
 
 /*************************** End of file ****************************/
-/*
-void Thread_R (void const *argument) {
-
-	char tab[2], texte[30];
-	
-  while (1) {
-		Driver_USART7.Receive(tab,1);		// A mettre ds boucle pour recevoir 
-		osSignalWait(0x01, osWaitForever);	// sommeil attente reception
-				
-  }
-}
-
-void Thread_T (void const *argument) {
-
-  while (1) {
-    Driver_USART7.Send("\n\rHello World!!!",16);
-		osSignalWait(0x01, osWaitForever);		// sommeil fin emission
-		osDelay(1000);
-  }
-}
-*/
