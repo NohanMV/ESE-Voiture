@@ -120,7 +120,7 @@ void mySPI_callback(uint32_t event)
 	}
 }
 
-char* Pilotage_LED(char nbLed, char lumi, char bleu, char vert, char rouge, char tab[]){ // Fonction Configuration LED
+char* Pilotage_LED(char nbLed, char lumi, char rouge, char vert, char bleu, char tab[]){ // Fonction Configuration LED
 	int i = 0,mod;
 	if (nbLed ==0)
 	{
@@ -284,13 +284,11 @@ void mySPI_Thread (void const *argument) {
 		//Driver_SPI1.Send(tab,24);
 		//evt = osSignalWait(0x01, osWaitForever);	// sommeil fin emission		
 		//HAL_ADC_Stop(&myADC2Handle); // stop conversion 
-				if (LectureADC() >= 2000 ) {
-				sendTab(Pilotage_LED(0,0xFF,0xFF,0x00,0x00,valeur));}
-				else {
-				sendTab(Pilotage_LED(0,0xFF,0x00,0xFF,0x00,valeur));
-				}
-		osDelay(100);
-						
+				if (LectureADC() > 2000) {
+				sendTab(Pilotage_LED(0,0xFF,0x1F,0x51,0xFF,valeur));}	
+				else{
+				sendTab(Pilotage_LED(0,0xFF,0x70,0xDB,0x93,valeur));
+				}	
   }
 }
 

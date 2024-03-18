@@ -7,8 +7,8 @@
 .\objects\spi_stm32f4xx.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include\Driver_Common.h
 .\objects\spi_stm32f4xx.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\spi_stm32f4xx.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h
-.\objects\spi_stm32f4xx.o: U:\Projet_S4\led\RTE\Device\STM32F407VGTx\stm32f4xx_hal_conf.h
-.\objects\spi_stm32f4xx.o: U:\Projet_S4\led\RTE\RTE_Components.h
+.\objects\spi_stm32f4xx.o: U:\Projet_S4\leds\RTE\Device\STM32F407VGTx\stm32f4xx_hal_conf.h
+.\objects\spi_stm32f4xx.o: U:\Projet_S4\leds\RTE\RTE_Components.h
 .\objects\spi_stm32f4xx.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h
 .\objects\spi_stm32f4xx.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_def.h
 .\objects\spi_stm32f4xx.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
@@ -34,4 +34,4 @@
 .\objects\spi_stm32f4xx.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr.h
 .\objects\spi_stm32f4xx.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h
 .\objects\spi_stm32f4xx.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_spi.h
-.\objects\spi_stm32f4xx.o: U:\Projet_S4\led\RTE\Device\STM32F407VGTx\RTE_Device.h
+.\objects\spi_stm32f4xx.o: U:\Projet_S4\leds\RTE\Device\STM32F407VGTx\RTE_Device.h

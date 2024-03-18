@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\test1.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\test1.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Thu Mar 14 17:33:48 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Mon Mar 18 12:41:12 2024
 <BR><P>
 <H3>Maximum Stack Usage =        280 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -938,19 +938,17 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rtx_conf_cm.o(.constdata)
 </UL>
-<P><STRONG><a name="[6e]"></a>mySPI_Thread</STRONG> (Thumb, 76 bytes, Stack size 256 bytes, led.o(i.mySPI_Thread))
+<P><STRONG><a name="[6e]"></a>mySPI_Thread</STRONG> (Thumb, 68 bytes, Stack size 256 bytes, led.o(i.mySPI_Thread))
 <BR><BR>[Stack]<UL><LI>Max Depth = 280<LI>Call Chain = mySPI_Thread &rArr; Pilotage_LED
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendTab
+<BR>[Calls]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendTab
 <LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Pilotage_LED
 <LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LectureADC
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> led.o(.constdata)
 </UL>
 <P><STRONG><a name="[cc]"></a>osDelay</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osDelay))
-<BR><BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mySPI_Thread
-<LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<BR><BR>[Called By]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[92]"></a>osKernelInitialize</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, rt_cmsis.o(i.osKernelInitialize))

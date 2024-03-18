@@ -1,8 +1,8 @@
 .\objects\led.o: led.c
 .\objects\led.o: main.h
 .\objects\led.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h
-.\objects\led.o: U:\Projet_S4\led\RTE\Device\STM32F407VGTx\stm32f4xx_hal_conf.h
-.\objects\led.o: U:\Projet_S4\led\RTE\RTE_Components.h
+.\objects\led.o: U:\Projet_S4\leds\RTE\Device\STM32F407VGTx\stm32f4xx_hal_conf.h
+.\objects\led.o: U:\Projet_S4\leds\RTE\RTE_Components.h
 .\objects\led.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h
 .\objects\led.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_def.h
 .\objects\led.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
