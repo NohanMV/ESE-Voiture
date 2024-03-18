@@ -1,0 +1,4 @@
+panneau 50 = id 3 
+panneau stop = id 2
+panneau 130 = id 0 
+interdit = id 1 

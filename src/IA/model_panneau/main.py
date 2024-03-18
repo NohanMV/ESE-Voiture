@@ -6,8 +6,8 @@ import gc, sys
 from fpioa_manager import fm
 
 input_size = (224, 224)
-labels = ['stop']
-anchors = [3.59, 3.16, 1.5, 0.73, 4.69, 5.25, 6.28, 3.44, 1.97, 1.66]
+labels = ['pano130', 'interdit', 'feu_rouge', 'stop', 'pano50']
+anchors = [1.55, 2.12, 5.42, 5.48, 0.66, 0.91, 3.66, 4.0, 6.75, 6.66]
 
 def lcd_show_except(e):
     import uio
@@ -101,7 +101,7 @@ def main(anchors, labels = None, model_addr="/sd/m.kmodel", sensor_window=input_
 if __name__ == "__main__":
     try:
         # main(anchors = anchors, labels=labels, model_addr=0x300000, lcd_rotation=0)
-        main(anchors = anchors, labels=labels, model_addr="/sd/model-106929.kmodel")
+        main(anchors = anchors, labels=labels, model_addr="/sd/model-107706.kmodel")
     except Exception as e:
         sys.print_exception(e)
         lcd_show_except(e)
