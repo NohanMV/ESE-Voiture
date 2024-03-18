@@ -431,17 +431,15 @@ ARM Macro Assembler    Page 7
               00000200 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
-ork --depend=.\objects\startup_lpc17xx.d -o.\objects\startup_lpc17xx.o -IC:\Use
-rs\TEMP.GEII2.013\Downloads\ESE-Voiture\ESE-Voiture-main\src\lidar\RTE -IC:\Use
-rs\TEMP.GEII2.013\Downloads\ESE-Voiture\ESE-Voiture-main\src\lidar\RTE\Device\L
-PC1768 -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include -IC:\Keil_v5\AR
-M\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6
-.0\CMSIS\RTOS\RTX\INC -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Boards\Keil\
-MCB1700\Common -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include -IC:
-\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver -IC:\Keil_v5\ARM\PACK\Keil\
-MDK-Middleware\7.0.0\Board --predefine="__RTX SETA 1" --predefine="__UVISION_VE
-RSION SETA 517" --predefine="_RTE_ SETA 1" --predefine="LPC175x_6x SETA 1" --li
-st=.\listings\startup_lpc17xx.lst RTE\Device\LPC1768\startup_LPC17xx.s
+ork --depend=.\objects\startup_lpc17xx.d -o.\objects\startup_lpc17xx.o -IU:\ESE
+-Voiture-main\src\lidar\RTE -IU:\ESE-Voiture-main\src\lidar\RTE\Device\LPC1768 
+-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include -IC:\Keil_v5\ARM\PACK\
+ARM\CMSIS\5.6.0\CMSIS\Driver\Include -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4
+.0\Boards\Keil\MCB1700\Common -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Devi
+ce\Include -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver -IC:\Keil_v5
+\ARM\PACK\Keil\MDK-Middleware\7.0.0\Board --predefine="__UVISION_VERSION SETA 5
+17" --predefine="_RTE_ SETA 1" --predefine="LPC175x_6x SETA 1" --list=.\listing
+s\startup_lpc17xx.lst RTE\Device\LPC1768\startup_LPC17xx.s
 
 
 
@@ -1094,4 +1092,4 @@ Symbol: __use_two_region_memory
       None
 Comment: __use_two_region_memory unused
 3 symbols
-404 symbols in table
+403 symbols in table

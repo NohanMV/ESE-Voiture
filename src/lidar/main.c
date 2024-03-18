@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <lpc17xx.h>
 #include <math.h>
-#include "cmsis_os.h" 
 
 
 #define SBIT_CNTEN     0 
@@ -18,8 +17,7 @@
 #define SCREEN_WIDTH 		 320
 #define SCREEN_HEIGHT 		 240
 #define LIDAR_RANGE 	 250
-#define LIDAR_RESOLUTION 360
-
+#define LIDAR_RESOLUTION 400
 
 extern ARM_DRIVER_USART Driver_USART0;
 extern ARM_DRIVER_USART Driver_USART1;
@@ -27,89 +25,12 @@ extern ARM_DRIVER_USART Driver_USART1;
 extern GLCD_FONT GLCD_Font_6x8;
 extern GLCD_FONT GLCD_Font_16x24;
 
-typedef struct {
-char lidarQualite;
-char lidarAngle;
-char lidarDistance;
-} LidarINFO;
-
-osThreadId tid_myUART_Thread;
-osThreadId ID_updateDisplay ;
-osThreadId ID_LidarAffichageGLCD ;
-osThreadId ID_myUART_ThreadT ;
-osThreadId ID_myUART_ThreadR ;
-osMailQId ID_MailInfo;
-osMailQDef (BAL,16 , LidarINFO) ;
-osMutexId ID_mut_GLCD; // Mutex pour accès LCD
-osMutexDef (mut_GLCD);
-
-
- //lidarQualite;
-//unsigned short lidarAngle, lidarDistance[361];
+char 	rxSCAN[12], lidarQualite;
+unsigned short lidarAngle, lidarDistance[361];
 float scale = (float)GLCD_WIDTH / LIDAR_RANGE;
 
-void myUSART_callback(uint32_t event)
-{
-//  uint32_t mask;
-//  mask = ARM_USART_EVENT_RECEIVE_COMPLETE  |
-//         ARM_USART_EVENT_TRANSFER_COMPLETE |
-//         ARM_USART_EVENT_SEND_COMPLETE     |
-//         ARM_USART_EVENT_TX_COMPLETE       ;
-  if (event & ARM_USART_EVENT_RECEIVE_COMPLETE ) {
-    /* Success: Wakeup Thread */
-    osSignalSet(ID_myUART_ThreadT, 0x04);
-  }
-	  if (event & ARM_USART_EVENT_SEND_COMPLETE ) {
-    /* Success: Wakeup Thread */
-    osSignalSet(ID_myUART_ThreadR, 0x01);
-  }
-}
-
-void myUART_ThreadT(const void* argument)
-{
-	static char txSCAN[2] = {0xA5,0x20};
-	while (1)
-    {
-			osSignalWait(0x04, osWaitForever);
-			osMutexWait(ID_mut_GLCD, osWaitForever);
-			Driver_USART0.Send(txSCAN,2); 
-			osMutexRelease(ID_mut_GLCD);
-			
-		}
-}
-
-void myUART_ThreadR(const void* argument)
-{
-LidarINFO *ptrINFO;
-	char 	rxSCAN[12];
-	char lidarAngle,lidarQualite, lidarDistance[360];
-osEvent EVretour;
-	while (1)
-    {
-	   osSignalWait(0x01, osWaitForever);
-		 osMutexWait(ID_mut_GLCD, osWaitForever);
-     Driver_USART0.Receive(rxSCAN,12);
-		 osMutexRelease(ID_mut_GLCD);
-		 lidarQualite  = rxSCAN[0] >> 2;
-		 if (lidarQualite > 32) { // Qualité minimum de 50 par rapport à val max de 64, augmentation de la précision
-		 lidarAngle    = (((rxSCAN[2] << 7) | rxSCAN[1]) >> 1) / 64.0;
-		 lidarDistance[lidarAngle] = ((rxSCAN[4] << 7) | rxSCAN[3]) / 4.0 ;
-		 //LidarAffichageUART(lidarQualite, lidarAngle, lidarDistance);
-		 //LidarAffichageGLCD(lidarQualite, lidarAngle, lidarDistance);
-		 //compteur++;
-			ptrINFO = osMailAlloc(ID_MailInfo, osWaitForever);
-			ptrINFO->lidarAngle = lidarAngle;
-			ptrINFO->lidarQualite = lidarQualite;
-			ptrINFO->lidarDistance = lidarDistance[lidarAngle];
-			osMailPut(ID_MailInfo, ptrINFO);
-			osSignalSet(ID_LidarAffichageGLCD, 0x05);	 
-		}
-		//if (compteur == 360) {osSignalSet(ID_updateDisplay, 0x05); compteur = 0;}
-	}
-}
-		
 void Init_USART0(void){
-	Driver_USART0.Initialize(myUSART_callback);
+	Driver_USART0.Initialize(NULL);
 	Driver_USART0.PowerControl(ARM_POWER_FULL);
 	Driver_USART0.Control(	ARM_USART_MODE_ASYNCHRONOUS |
 							ARM_USART_DATA_BITS_8		|
@@ -119,11 +40,10 @@ void Init_USART0(void){
 							115200);
 	Driver_USART0.Control(ARM_USART_CONTROL_TX,1);
 	Driver_USART0.Control(ARM_USART_CONTROL_RX,1);
-		
 }
 
 void Init_USART1(void){
-	Driver_USART1.Initialize(NULL);//
+	Driver_USART1.Initialize(NULL);
 	Driver_USART1.PowerControl(ARM_POWER_FULL);
 	Driver_USART1.Control(	ARM_USART_MODE_ASYNCHRONOUS |
 							ARM_USART_DATA_BITS_8		|
@@ -133,13 +53,10 @@ void Init_USART1(void){
 							115200);
 	Driver_USART1.Control(ARM_USART_CONTROL_TX,1);
 	Driver_USART1.Control(ARM_USART_CONTROL_RX,1);
-
 	
 	
 }
-void updateDisplay(void const * argument){
-	char lidarDistance[361];
-	osSignalWait(0x06, osWaitForever);
+void updateDisplay() {
 	int oldY, oldX;
     // Calculer l'échelle de conversion de la distance lidar à l'écran
   
@@ -163,9 +80,7 @@ void updateDisplay(void const * argument){
 //		if (i == 500){
 //				GLCD_ClearScreen();  // Effacer l'écran
 		}
-//		osSignalSet(ID_updateDisplay, 0x05);
 }
-
 
 void PWM_Init(void) {
 
@@ -219,35 +134,23 @@ void LidarSCAN (void) {
 }
 	
 
-void LidarAffichageGLCD (void const * argument){
-	
-	char lcdQualite[12], lcdAngle[11], lcdDistance[17],valeur_recue,valeur_recue_Qualite,valeur_recue_Angle,valeur_recue_Distance;
-	LidarINFO *recep;
-	
-  osEvent EVretour;
+void LidarAffichageGLCD (char lidarQualite, unsigned short lidarAngle, unsigned short lidarDistance[]){
+		char lcdQualite[12], lcdAngle[11], lcdDistance[17];
 
-	while(1){
-		EVretour = osMailGet(ID_MailInfo, osWaitForever);
-		recep = EVretour.value.p;
-		valeur_recue_Qualite = recep->lidarQualite ; 
-		valeur_recue_Angle = recep->lidarAngle ; 
-		valeur_recue_Distance = recep->lidarDistance ; 
-    osMailFree(ID_MailInfo, recep);
 		lcdQualite[11]='\0';
 		lcdAngle[10]='\0';
 		lcdDistance[16]='\0';
-
-		sprintf(lcdQualite, 	"Qualite: %2d", 	valeur_recue_Qualite);
-		sprintf(lcdAngle, 		"Angle: %3d", 		valeur_recue_Angle);
-		sprintf(lcdDistance, 	"Distance: %05d", valeur_recue_Distance);
+	
+		sprintf(lcdQualite, 	"Qualite: %2d", 	lidarQualite);
+		sprintf(lcdAngle, 		"Angle: %3d", 		lidarAngle);
+		sprintf(lcdDistance, 	"Distance: %05d", lidarDistance[lidarAngle]);
+	
 		GLCD_DrawString(0, 1*24, 	lcdQualite);
 		GLCD_DrawString(0, 2*24, 	lcdAngle);
 		GLCD_DrawString(0, 3*24, 	lcdDistance);
-			
 }
-}
+
 void LidarAffichageUART (char lidarQualite, unsigned short lidarAngle, unsigned short lidarDistance[]){
-	osThreadDef(updateDisplay, osPriorityNormal, 1, 0);
 		char lcdQualite[12], lcdAngle[11], lcdDistance[17];
 
 		lcdQualite[11]='\0';
@@ -268,44 +171,31 @@ void LidarAffichageUART (char lidarQualite, unsigned short lidarAngle, unsigned 
 		Driver_USART1.Send(lcdDistance, 13);
 }
 
-osThreadDef (updateDisplay, osPriorityNormal, 1, 0);
-osThreadDef (LidarAffichageGLCD, osPriorityNormal, 1, 0);
-osThreadDef (myUART_ThreadT, osPriorityNormal, 1, 0);
-osThreadDef (myUART_ThreadR, osPriorityNormal, 1, 0);
+
 int main(void){
+	unsigned short compteur;
 	GLCD_Initialize();
-	GLCD_SetBackgroundColor(GLCD_COLOR_WHITE);
+	GLCD_SetBackgroundColor(GLCD_COLOR_BLACK);
 	GLCD_ClearScreen();
 	GLCD_SetFont(&GLCD_Font_16x24);
-	GLCD_SetForegroundColor  (GLCD_COLOR_BLACK);
+	
 	Init_USART0();
 	PWM_Init();
-	osKernelInitialize() ;
-//ID_updateDisplay = osThreadCreate ( osThread ( updateDisplay ), NULL );
-	ID_LidarAffichageGLCD = osThreadCreate ( osThread ( LidarAffichageGLCD ), NULL );
-	ID_myUART_ThreadT = osThreadCreate ( osThread ( myUART_ThreadT ), NULL );
-	ID_myUART_ThreadR = osThreadCreate ( osThread ( myUART_ThreadR ), NULL );
-	ID_LidarAffichageGLCD = osThreadCreate ( osThread ( LidarAffichageGLCD ), NULL );
-	ID_mut_GLCD = osMutexCreate(osMutex(mut_GLCD)) ;
-	ID_MailInfo = osMailCreate(osMailQ(BAL),NULL) ;
-	LidarSCAN();
-	osKernelStart() ;
-	osDelay(osWaitForever) ;
 	
-//	LidarGET_INFO();	
-//	while(1) {
-//			//LidarGET_INFO();
-//		Driver_USART0.Receive(rxSCAN,12);
-//		lidarQualite  = rxSCAN[0] >> 2;
-//		if (lidarQualite > 32) { // Qualité minimum de 50 par rapport à val max de 64, augmentation de la précision
-//			lidarAngle    = (((rxSCAN[2] << 7) | rxSCAN[1]) >> 1) / 64.0;
-//			lidarDistance[lidarAngle] = ((rxSCAN[4] << 7) | rxSCAN[3]) / 4.0 ;
-//			//LidarAffichageUART(lidarQualite, lidarAngle, lidarDistance);
-//			//LidarAffichageGLCD(lidarQualite, lidarAngle, lidarDistance);
-//			compteur++;
-//		}
-//	//	if (compteur == 360) {updateDisplay(); compteur = 0;}
-//		
-//	}
+	LidarSCAN();
+	
+	while(1) {
+		Driver_USART0.Receive(rxSCAN,12);
+		lidarQualite  = rxSCAN[0] >> 2;
+		if (lidarQualite > 32) { // Qualité minimum de 50 par rapport à val max de 64, augmentation de la précision
+			lidarAngle    = (((rxSCAN[2] << 7) | rxSCAN[1]) >> 1) / 64.0;
+			lidarDistance[lidarAngle] = ((rxSCAN[4] << 7) | rxSCAN[3]) / 4.0 ;
+			//LidarAffichageUART(lidarQualite, lidarAngle, lidarDistance);
+			//LidarAffichageGLCD(lidarQualite, lidarAngle, lidarDistance);
+			compteur++;
+		}
+		if (compteur == 360) {updateDisplay(); compteur = 0;}
+		
+	}
 }
 
