@@ -55,15 +55,14 @@ void RFID(void const * argument){
 	char tabLCD[20];
 	int resultat;	
 	int i =0;
-	
-	osSignalWait(0x04, osWaitForever);
-	
+		
 		while(1){
 			
 			for (i=0; i < 14 ; i++)
 		{
 		Driver_USART1.Receive(tab+i, 1);
-		while(Driver_USART1.GetRxCount()<1);
+		osSignalWait(0x04, osWaitForever);
+
 		}
 
 		sprintf(tabLCD, "%02X %02X %02X %02X %02X %02X", tab[0], tab[1], tab[2], tab[3], tab[4], tab[5]);
@@ -103,7 +102,5 @@ int main (void)
 	osKernelStart() ;
 	osDelay(osWaitForever) ;
 	
-	
 } 
-
 
