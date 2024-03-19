@@ -431,15 +431,16 @@ ARM Macro Assembler    Page 7
               00000200 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
-ork --depend=.\objects\startup_lpc17xx.d -o.\objects\startup_lpc17xx.o -I"U:\Pr
-ojet\Pilotage réception\RTE" -I"U:\Projet\Pilotage réception\RTE\Device\LPC1768
-" -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include -IC:\Keil_v5\ARM\PAC
-K\ARM\CMSIS\5.6.0\CMSIS\Driver\Include -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2
-.4.0\Boards\Keil\MCB1700\Common -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\De
-vice\Include -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver -IC:\Keil_
-v5\ARM\PACK\Keil\MDK-Middleware\7.0.0\Board --predefine="__UVISION_VERSION SETA
- 517" --predefine="_RTE_ SETA 1" --predefine="LPC175x_6x SETA 1" --list=.\listi
-ngs\startup_lpc17xx.lst RTE\Device\LPC1768\startup_LPC17xx.s
+ork --depend=.\objects\startup_lpc17xx.d -o.\objects\startup_lpc17xx.o -IU:\Pro
+jet\pilotage-recep\RTE -IU:\Projet\pilotage-recep\RTE\Device\LPC1768 -IC:\Keil_
+v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\
+5.6.0\CMSIS\Driver\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\RTOS\RTX
+\INC -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Boards\Keil\MCB1700\Common -I
+C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include -IC:\Keil_v5\ARM\PACK
+\Keil\LPC1700_DFP\2.4.0\RTE_Driver -IC:\Keil_v5\ARM\PACK\Keil\MDK-Middleware\7.
+0.0\Board --predefine="__RTX SETA 1" --predefine="__UVISION_VERSION SETA 517" -
+-predefine="_RTE_ SETA 1" --predefine="LPC175x_6x SETA 1" --list=.\listings\sta
+rtup_lpc17xx.lst RTE\Device\LPC1768\startup_LPC17xx.s
 
 
 
@@ -1092,4 +1093,4 @@ Symbol: __use_two_region_memory
       None
 Comment: __use_two_region_memory unused
 3 symbols
-403 symbols in table
+404 symbols in table
