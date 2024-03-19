@@ -18,10 +18,12 @@
 extern ARM_DRIVER_USART Driver_USART6;
 extern   ARM_DRIVER_CAN         Driver_CAN1;
 extern uint32_t os_time;
-int variable;
 
-osThreadId id_CANthreadR;
-osThreadId id_CANthreadT;
+int variable;
+int identifiant;
+char retour;
+
+
 
 uint32_t HAL_GetTick(void) { 
   return os_time; 
@@ -38,12 +40,19 @@ Externals
 */
 WM_HWIN CreateWindow(void);
 
-void Init_UART();
+
 
 /*----------------------------------------------------------------------------
  *      GUIThread: GUI Thread for Single-Task Execution Model
  *---------------------------------------------------------------------------*/
- 
+
+void CANthreadT(void const *argument);
+osThreadId id_CANthreadT;
+osThreadDef(CANthreadT,osPriorityNormal, 1,0);
+
+void CANthreadR(void const *argument);
+osThreadId id_CANthreadR;
+osThreadDef(CANthreadR,osPriorityNormal, 1,0);
 
 void GUIThread (void const *argument);              // thread function
 osThreadId tid_GUIThread;                           // thread id
@@ -53,7 +62,6 @@ int Init_GUIThread (void) {
 
   tid_GUIThread = osThreadCreate (osThread(GUIThread), NULL);
   if (!tid_GUIThread) return(-1);
-  
   return(0);
 }
 
@@ -146,11 +154,13 @@ static void CPU_CACHE_Enable (void) {
   SCB_EnableDCache();
 }
 
-void GUIThread (void const *argument) {
 
+void GUIThread (void const *argument) {
+	ARM_CAN_MSG_INFO   rx_msg_info;
+
+	uint8_t data_buf[8];
+	int   taille,i;
 	WM_HWIN hDlg;
-	
-	
 
   GUI_Init();
 	Touch_Initialize();
@@ -159,11 +169,10 @@ void GUIThread (void const *argument) {
 		GUI_Exec();
 		GUI_Delay(10);
 		
-		if (variable==1){
-			while(Driver_USART6.GetStatus().tx_busy==1);
-			Driver_USART6.Send("1",1);
-		}
+		Driver_CAN1.MessageRead(0, &rx_msg_info, data_buf, 8); // 8 data max
+		retour = data_buf[0] ;
 		GUI_X_ExecIdle();             /* Nothing left to do for the moment ... Idle processing */
+		
   }
 }
 
@@ -175,10 +184,10 @@ void myCAN1_callback(uint32_t obj_idx, uint32_t event){
        osSignalSet(id_CANthreadR, 0x01);
         break;
     
-		 case ARM_CAN_EVENT_SEND_COMPLETE:
-        /* 	Message was sent successfully by the obj_idx object.  */
-        osSignalSet(id_CANthreadT, 0x01);
-        break;
+//		 case ARM_CAN_EVENT_SEND_COMPLETE:
+//        /* 	Message was sent successfully by the obj_idx object.  */
+//        osSignalSet(id_CANthreadT, 0x01);
+//        break;
 				}
 }
 
@@ -202,7 +211,7 @@ void InitCan1 (void) {
 	
 	
 	Driver_CAN1.ObjectConfigure(0,ARM_CAN_OBJ_RX);				// Objet 0 du CAN1 pour réception
-	Driver_CAN1.ObjectConfigure(1,ARM_CAN_OBJ_RX);				// Objet 1 du CAN1 pour emission
+	//Driver_CAN1.ObjectConfigure(2,ARM_CAN_OBJ_TX);				// Objet 2 du CAN1 pour emission
 
 	Driver_CAN1.SetMode(ARM_CAN_MODE_NORMAL);					// fin init
 }
@@ -230,6 +239,7 @@ void Init_UART(){
 
 
 
+
 void CANthreadT(void const *argument)
 {
 	ARM_CAN_MSG_INFO     tx_msg_info;
@@ -249,10 +259,8 @@ void CANthreadT(void const *argument)
 void CANthreadR(void const *argument)
 {
 	ARM_CAN_MSG_INFO   rx_msg_info;
-	uint8_t data_buf[8];
-	uint8_t chaine[20];
-	uint8_t chaine1[20];
-	int identifiant , taille,i;
+	char data_buf[8];
+	int   taille,i;
 	int retour;
 	
 	while(1)
@@ -263,16 +271,12 @@ void CANthreadR(void const *argument)
 	identifiant = rx_msg_info.id; // (int)
 	retour = data_buf[0] ; // 1ère donnée de la trame récupérée (char)
 	taille = rx_msg_info.dlc; // nb data (char)
-	
+	/*
 	sprintf(chaine,"id = %x ",(short)identifiant) ;	
 	sprintf(chaine1,"data = %02x",(short)retour) ;
+	*/
 	}
 }
-
-
-
-osThreadDef(CANthreadR,osPriorityNormal, 1,0);
-osThreadDef(CANthreadT,osPriorityNormal, 1,0);
 
 
 int main (void) {
@@ -287,12 +291,12 @@ int main (void) {
 	
 	//Init peripherals
 	InitCan1();
-	Init_UART();
+	//Init_UART();
 	
   // create 'thread' functions that start executing,
   Init_GUIThread();
 	id_CANthreadR = osThreadCreate (osThread(CANthreadR), NULL);
-	id_CANthreadT = osThreadCreate (osThread(CANthreadT), NULL);
+	//id_CANthreadT = osThreadCreate (osThread(CANthreadT), NULL);
 
   osKernelStart ();                         // start thread execution 
   osDelay(osWaitForever);
