@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'lidar' 
+ * Project: 'PilotageRéception' 
  * Target:  'LPC1768' 
  */
 
@@ -16,6 +16,8 @@
  */
 #define CMSIS_device_header "LPC17xx.h"
 
+/* Keil::CMSIS Driver:SPI:SPI@2.3.0 */
+#define RTE_Drivers_SPI2                /* Driver SPI2 */
 /* Keil::CMSIS Driver:SPI:SSP@2.10.0 */
 #define RTE_Drivers_SPI0                /* Driver SPI0 */
         #define RTE_Drivers_SPI1                /* Driver SPI1 */

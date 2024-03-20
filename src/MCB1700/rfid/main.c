@@ -1,4 +1,3 @@
-
 #include "Driver_USART.h"               // ::CMSIS Driver:USART(API):USART
 #include "Board_LED.h"                  // ::Board Support:LED
 #include "GLCD_Config.h"                // Keil.MCB1700::Board Support:Graphic LCD
