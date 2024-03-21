@@ -1,4 +1,3 @@
-
 #========================== Programme Base TP2 ==== HD 2024 ======================================
 
 import sensor, image, lcd
@@ -45,22 +44,27 @@ while True:
                     objet = "panneau 130"
                     led_bleue.value(0) # Led en cyan
                     led_verte.value(0)
+                    img.draw_string(0, 0, "panneau 130", color=(0x00,0xFF,0xFF), scale=1) 
                 if (i.classid()==1):
                     objet = "panneau sens interdit"
                     led_rouge.value(0) # Led en blanc
                     led_bleue.value(0)
                     led_verte.value(0)
+                    img.draw_string(0, 0, "panneau sens interdit", color=(0xFF,0xFF,0xFF), scale=1) 
                 if (i.classid()==2):
                     objet = "feu rouge"
                     led_rouge.value(0) # Led en rouge
+                    img.draw_string(0, 0, "feu rouge", color=(0xFF,0x00,0x00), scale=1) 
                 if (i.classid()==3):
                     objet = "panneau stop"
                     led_rouge.value(0) # Led en jaune
                     led_verte.value(0)
+                    img.draw_string(0, 0, "panneau stop", color=(0xFF,0xFF,0x00), scale=1) 
                 if (i.classid()==4):
                     objet = "panneau 50"
                     led_rouge.value(0) # Led en violet
                     led_bleue.value(0)
+                    img.draw_string(0, 0, "panneau 50", color=(0xFF,0x00,0xFF), scale=1) 
                 print(objet)
         else:
             led_bleue.value(1)
@@ -68,4 +72,3 @@ while True:
             led_verte.value(1)
 
         lcd.display(img)
-
