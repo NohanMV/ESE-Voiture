@@ -1,4 +1,5 @@
-panneau 50 = id 3 
-panneau stop = id 2
+panneau 50 = id 4 
+panneau stop = id 3
 panneau 130 = id 0 
-interdit = id 1 
+panneau sens interdit = id 1 
+feu rouge = id 2
