@@ -1,6 +1,7 @@
 --cpu Cortex-M3
 ".\objects\main.o"
 ".\objects\thread.o"
+".\objects\haut-parleur.o"
 ".\objects\glcd_fonts.o"
 ".\objects\glcd_mcb1700.o"
 ".\objects\led_mcb1700.o"

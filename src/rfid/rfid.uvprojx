@@ -426,6 +426,11 @@
               <FileType>1</FileType>
               <FilePath>.\Thread.c</FilePath>
             </File>
+            <File>
+              <FileName>haut-parleur.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\haut-parleur.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

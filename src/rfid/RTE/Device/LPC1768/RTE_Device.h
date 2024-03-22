@@ -536,11 +536,11 @@
 // </e>
 
 // <e> UART2 (Universal asynchronous receiver transmitter)
-#define RTE_UART2                       0
+#define RTE_UART2                       1
 
 //   <o> UART2_TX Pin <0=>Not used <1=>P0_10 <2=>P2_8
 //   <i> UART2 Serial Output pin
-#define RTE_UART2_TX_ID                 0
+#define RTE_UART2_TX_ID                 2
 #if    (RTE_UART2_TX_ID == 0)
 #define RTE_UART2_TX_PIN_EN             0
 #elif  (RTE_UART2_TX_ID == 1)

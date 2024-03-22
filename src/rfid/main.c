@@ -4,9 +4,9 @@
 #include "Board_GLCD.h"                 // ::Board Support:Graphic LCD
 #include "cmsis_os.h"                   // ARM::CMSIS:RTOS:Keil RTX
 #include "RTE_Components.h"             // Component selection
+#include "haut-parleur.h"
 
-
-extern GLCD_FONT GLCD_Font_16x24 ; 
+extern GLCD_FONT GLCD_Font_16x24; 
 extern ARM_DRIVER_USART Driver_USART1;
 
 osThreadId ID_tache1;
@@ -37,13 +37,13 @@ void Init_UART(void)
 int compare_tableaux(unsigned char *tab1, unsigned char *tab2, unsigned int taille)
 {
     int i;
-    for (i = 0; i < taille ; i++) 
+    for (i=0;i<taille;i++) 
 		{
-       if (tab1[i] != tab2[i]) 
+       if (tab1[i]!=tab2[i]) 
 				{
-            return 1; // Les tableaux sont différents, retourne 0
+            return 1; // Les tableaux sont différents, retourne 1
 				}
-				 // Les tableaux sont identiques, retourne 1
+											// Les tableaux sont identiques, retourne 0
 		}
 	return 0;
 }
@@ -61,29 +61,37 @@ void RFID(void const * argument)
 		
 		while(1)
 		{
-			for (i=0; i < 14 ; i++)
+			for (i=0;i<14;i++)
 				{
-					Driver_USART1.Receive(tab+i, 1);
+					Driver_USART1.Receive(tab+i,1);
 					osSignalWait(0x04, osWaitForever);
 				}
+				
 			sprintf(tabLCD, "%02X %02X %02X %02X %02X %02X", tab[0], tab[1], tab[2], tab[3], tab[4], tab[5]);
-			GLCD_DrawString(10, 24, tabLCD);
+			GLCD_DrawString(0, 25, tabLCD);
+			sprintf(tabLCD, "%02X %02X %02X %02X %02X %02X", tab[6], tab[7], tab[8], tab[9], tab[10], tab[11]);
+			GLCD_DrawString(0, 50, tabLCD);
+				
 			resultat=compare_tableaux(tab+1,soluce,12);
 			if(resultat == 1) 
 				{
 					GLCD_DrawString(0, 0,"ca marche pas");
-					LED_On(2)	;  //P1.31
+					haut_parleurs(0x0A);
+					LED_On(2)	;  // P1.31
 					osDelay(10000);
 					LED_Off(2);
-					//erreur, l'id ne correspond pas
+					
+					// erreur, l'id ne correspond pas
 				}
 				else if(resultat == 0)
 				{
 					GLCD_DrawString(0, 0,"lets go      ");
-					LED_On(1)	; //P1.29	 
+					haut_parleurs(DEVEROUILLAGE);
+					LED_On(1)	; // P1.29	 
 					osDelay(10000);
-					LED_Off(1);	 
-					//super, l'id correspond.
+					LED_Off(1);
+					
+					// super, l'id correspond.
 				}		
 		}
 }
@@ -91,10 +99,10 @@ void RFID(void const * argument)
 osThreadDef (RFID, osPriorityBelowNormal, 1, 0);
 int main (void)
 {
-	
 	Init_UART();
 	LED_Initialize();
 	GLCD_Initialize ();
+	Init_UART_HAUT_PARLEURS();
 	osKernelInitialize() ;
 	ID_tache1 = osThreadCreate ( osThread ( RFID ), NULL ) ;
 	GLCD_ClearScreen();
