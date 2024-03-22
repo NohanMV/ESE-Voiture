@@ -19,11 +19,16 @@ extern ARM_DRIVER_USART Driver_USART6;
 extern   ARM_DRIVER_CAN         Driver_CAN1;
 extern uint32_t os_time;
 
-int variable;
+int variable; // communication uart
+
+//communication can---
 int identifiant;
-char retour;
-
-
+int retour;
+uint8_t data_buf[8];
+int   taille,i;
+char tab[20];
+ARM_CAN_MSG_INFO   rx_msg_info;
+//-------------------
 
 uint32_t HAL_GetTick(void) { 
   return os_time; 
@@ -45,10 +50,6 @@ WM_HWIN CreateWindow(void);
 /*----------------------------------------------------------------------------
  *      GUIThread: GUI Thread for Single-Task Execution Model
  *---------------------------------------------------------------------------*/
-
-void CANthreadT(void const *argument);
-osThreadId id_CANthreadT;
-osThreadDef(CANthreadT,osPriorityNormal, 1,0);
 
 void CANthreadR(void const *argument);
 osThreadId id_CANthreadR;
@@ -168,27 +169,26 @@ void GUIThread (void const *argument) {
   while (1) {
 		GUI_Exec();
 		GUI_Delay(10);
-		
-		Driver_CAN1.MessageRead(0, &rx_msg_info, data_buf, 8); // 8 data max
-		retour = data_buf[0] ;
+		if (variable==1)
+		{
+			while(Driver_USART6.GetStatus().tx_busy == 1); // attente buffer TX vide
+			Driver_USART6.Send("1",1);
+			variable=0;
+		}
+
 		GUI_X_ExecIdle();             /* Nothing left to do for the moment ... Idle processing */
 		
   }
 }
 
 void myCAN1_callback(uint32_t obj_idx, uint32_t event){
-    switch (event)
-    {
-    case ARM_CAN_EVENT_RECEIVE:
-        /*  Message was received successfully by the obj_idx object. */
-       osSignalSet(id_CANthreadR, 0x01);
-        break;
-    
-//		 case ARM_CAN_EVENT_SEND_COMPLETE:
-//        /* 	Message was sent successfully by the obj_idx object.  */
-//        osSignalSet(id_CANthreadT, 0x01);
-//        break;
-				}
+
+
+  if (event & ARM_CAN_EVENT_RECEIVE)
+	 {
+			Driver_CAN1.MessageRead(0, &rx_msg_info, data_buf, 8); // 8 data max
+			osSignalSet(id_CANthreadR, 0x01);			
+		}
 }
 
 
@@ -207,11 +207,11 @@ void InitCan1 (void) {
 	// Mettre ici les filtres ID de réception sur objet 0
 	//....................................................
 	// Filtre objet 0 sur uniquement identifiant 0x0f6
-	//Driver_CAN1.ObjectSetFilter( 0, ARM_CAN_FILTER_ID_EXACT_ADD ,ARM_CAN_STANDARD_ID(0x128),0) ; // non nécessaire ici
+	Driver_CAN1.ObjectSetFilter( 0,ARM_CAN_FILTER_ID_MASKABLE_ADD ,ARM_CAN_STANDARD_ID(0x000),0X000) ; // non nécessaire ici
 	
 	
 	Driver_CAN1.ObjectConfigure(0,ARM_CAN_OBJ_RX);				// Objet 0 du CAN1 pour réception
-	//Driver_CAN1.ObjectConfigure(2,ARM_CAN_OBJ_TX);				// Objet 2 du CAN1 pour emission
+	Driver_CAN1.ObjectConfigure(2,ARM_CAN_OBJ_TX);				// Objet 2 du CAN1 pour emission
 
 	Driver_CAN1.SetMode(ARM_CAN_MODE_NORMAL);					// fin init
 }
@@ -240,44 +240,18 @@ void Init_UART(){
 
 
 
-void CANthreadT(void const *argument)
-{
-	ARM_CAN_MSG_INFO     tx_msg_info;
-	uint8_t data_buf[8];
-	while (1) {
-		tx_msg_info.id = ARM_CAN_STANDARD_ID(0x128);
-		
-		tx_msg_info.rtr = 0; // 0 = trame DATA
-		data_buf[0] = 0xFA; // data à envoyer à placer dans un tableau de char
-		Driver_CAN1.MessageSend(1, &tx_msg_info, data_buf, 8); // 1 data à envoyer
-		
-		//osSignalWait(0x01, osWaitForever);		// sommeil en attente fin emission
-		osDelay(100);
-	}		
-}
+
 
 void CANthreadR(void const *argument)
 {
-	ARM_CAN_MSG_INFO   rx_msg_info;
-	char data_buf[8];
-	int   taille,i;
-	int retour;
-	
 	while(1)
 	{		
 	osSignalWait(0x01, osWaitForever);		// sommeil en attente réception
-		
-	Driver_CAN1.MessageRead(0, &rx_msg_info, data_buf, 8); // 8 data max
 	identifiant = rx_msg_info.id; // (int)
 	retour = data_buf[0] ; // 1ère donnée de la trame récupérée (char)
 	taille = rx_msg_info.dlc; // nb data (char)
-	/*
-	sprintf(chaine,"id = %x ",(short)identifiant) ;	
-	sprintf(chaine1,"data = %02x",(short)retour) ;
-	*/
 	}
 }
-
 
 int main (void) {
 
@@ -290,13 +264,13 @@ int main (void) {
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
 	
 	//Init peripherals
+	Init_UART();
 	InitCan1();
-	//Init_UART();
-	
+
   // create 'thread' functions that start executing,
   Init_GUIThread();
+	
 	id_CANthreadR = osThreadCreate (osThread(CANthreadR), NULL);
-	//id_CANthreadT = osThreadCreate (osThread(CANthreadT), NULL);
 
   osKernelStart ();                         // start thread execution 
   osDelay(osWaitForever);

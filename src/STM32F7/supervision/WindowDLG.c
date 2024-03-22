@@ -19,10 +19,7 @@
 */
 
 // USER START (Optionally insert additional includes)
-#include "Driver_USART.h"               // ::CMSIS Driver:USART
-#include "Board_LED.h"                  // ::Board Support:LED
-#include <stdio.h>
-
+#include "stdio.h"
 // USER END
 
 #include "DIALOG.h"
@@ -33,19 +30,14 @@
 *
 **********************************************************************
 */
-#define ID_WINDOW_0        (GUI_ID_USER + 0x00)
-#define ID_TEXT_0        (GUI_ID_USER + 0x01)
-#define ID_CHECKBOX_0        (GUI_ID_USER + 0x02)
-#define ID_BUTTON_0        (GUI_ID_USER + 0x03)
-#define ID_TEXT_1        (GUI_ID_USER + 0x04)
-#define ID_TEXT_2        (GUI_ID_USER + 0x05)
-#define ID_TEXT_3        (GUI_ID_USER + 0x06)
-#define ID_TEXT_4        (GUI_ID_USER + 0x07)
-
+#define ID_WINDOW_0 (GUI_ID_USER + 0x00)
+#define ID_TEXT_0 (GUI_ID_USER + 0x01)
+#define ID_TEXT_1 (GUI_ID_USER + 0x03)
+#define ID_BUTTON_0 (GUI_ID_USER + 0x04)
+#define ID_TEXT_2 (GUI_ID_USER + 0x05)
 
 
 // USER START (Optionally insert additional defines)
-#define WM_RXDATA (WM_USER + 0)
 // USER END
 
 /*********************************************************************
@@ -56,9 +48,13 @@
 */
 
 // USER START (Optionally insert additional static data)
-extern ARM_DRIVER_USART Driver_USART2;
-extern char recep; 
-int a , b,c; 
+extern int variable; 
+
+extern int identifiant;
+extern int retour;
+extern char data_buf[8];
+extern int   taille,i;
+extern char tab[20];
 // USER END
 
 /*********************************************************************
@@ -66,14 +62,11 @@ int a , b,c;
 *       _aDialogCreate
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 0, 480, 272, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "Voiture", ID_TEXT_0, 30, 20, 80, 20, 0, 0x0, 0 },
-  { CHECKBOX_CreateIndirect, "Phares", ID_CHECKBOX_0, 31, 149, 80, 20, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Claxon", ID_BUTTON_0, 304, 183, 80, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "Direction: ", ID_TEXT_1, 39, 95, 80, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "Lidar: ", ID_TEXT_2, 39, 132, 80, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "Ultrasons: ", ID_TEXT_3, 39, 116, 80, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "Text", ID_TEXT_4, 98, 95, 80, 20, 0, 0x0, 12 },
+  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 19, 2, 480, 272, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "Supervision IT2R", ID_TEXT_0, 30, 20, 160, 23, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "Id :", ID_TEXT_1, 26, 61, 157, 20, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Son", ID_BUTTON_0, 329, 195, 100, 40, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "Valeur", ID_TEXT_2, 24, 85, 80, 20, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -86,10 +79,6 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 */
 
 // USER START (Optionally insert additional static code)
-void sendCommand(char cmd, char P1,char P2);
-void Init_UART(void); 
-
-
 // USER END
 
 /*********************************************************************
@@ -101,22 +90,25 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   int     NCode;
   int     Id;
   // USER START (Optionally insert additional variables)
-  	char buf[10];
-		WM_MESSAGE rxData; 
-	// USER END
+  // USER END
 
   switch (pMsg->MsgId) {
   case WM_INIT_DIALOG:
     //
-    // Initialization of 'Voiture'
+    // Initialization of 'Supervision IT2R'
     //
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0);
-    TEXT_SetFont(hItem, GUI_FONT_20_1);
+    TEXT_SetFont(hItem, GUI_FONT_20B_1);
     //
-    // Initialization of 'Phares'
+    // Initialization of 'Id :'
     //
-    hItem = WM_GetDialogItem(pMsg->hWin, ID_CHECKBOX_0);
-    CHECKBOX_SetText(hItem, "Phares");
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_1);
+    TEXT_SetFont(hItem, GUI_FONT_16_1);
+    //
+    // Initialization of 'Valeur'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
+    TEXT_SetFont(hItem, GUI_FONT_16_1);
     // USER START (Optionally insert additional code for further widget initialization)
     // USER END
     break;
@@ -124,51 +116,15 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     Id    = WM_GetId(pMsg->hWinSrc);
     NCode = pMsg->Data.v;
     switch(Id) {
-    case ID_CHECKBOX_0: // Notifications sent by 'Phares'
+    case ID_BUTTON_0: // Notifications sent by 'Son'
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
-				//LED_On(0); 
-			        // USER END
-        break;
-      case WM_NOTIFICATION_RELEASED:
-        // USER START (Optionally insert code for reacting on notification message)
-			//LED_Off(0);
-				        // USER END
-        break;
-      case WM_NOTIFICATION_VALUE_CHANGED:
-        // USER START (Optionally insert code for reacting on notification message)
-			hItem =WM_GetDialogItem(pMsg ->hWin,ID_CHECKBOX_0); 
-			/*if (CHECKBOX_IsChecked(ID_CHECKBOX_0)){
-			LED_On(0);
-			}
-			else {
-			LED_Off(0); 
-			}	*/	 
-			        // USER END
-        break;
-      // USER START (Optionally insert additional code for further notification handling)
-      // USER END
-      }
-      break;
-    case ID_BUTTON_0: // Notifications sent by 'Claxon'
-      switch(NCode) {
-      case WM_NOTIFICATION_CLICKED:
-        // USER START (Optionally insert code for reacting on notification message)
-						//LED_On(0); 
-						hItem =WM_GetDialogItem(pMsg ->hWin,ID_BUTTON_0); 
-						//sendCommand(0x03, 0,2);
-			
-
-//			rxData.MsgId =WM_RXDATA; 
-//			rxData.Data.v = 20; 
-//			 WM_SendMessage(pMsg->hWin, &rxData);
+				variable=1;
         // USER END
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-					//LED_Off(0); 
-
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -180,28 +136,19 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     }
     break;
   // USER START (Optionally insert additional message handling)
-			case WM_RXDATA:
-			
-			hItem =WM_GetDialogItem(pMsg ->hWin,ID_TEXT_4); 
-			sprintf(buf,"%c",pMsg->Data.v );
-			TEXT_SetText(hItem,buf);
-			
-			
-			
-				break; 
   // USER END
   default:
     WM_DefaultProc(pMsg);
     break;
-	 hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_4 ); //diirection 
-   TEXT_SetText(hItem, &recep);   //changer a par une variable globale qui va definir dans ce cas l'info de la direction
-	
-   hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_2 ); //diirection 
-   TEXT_SetText(hItem, "b");   //changer b par une variable globale qui va definir dans ce cas l'info ddu lidar
-	hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_3 ); //diirection 
-   TEXT_SetText(hItem, "c");   //changer c par une variable globale qui va definir dans ce cas l'info du ultrason
-	
   }
+	sprintf(tab,"id %x ",(short)identifiant) ;
+	hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_1 ); //diirection 
+  TEXT_SetText(hItem, tab ); 
+	
+	sprintf(tab,"valeur %x ",(short)retour) ;
+	hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_2 ); //diirection 
+  TEXT_SetText(hItem, tab ); 
+	
 }
 
 /*********************************************************************
@@ -214,8 +161,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 *
 *       CreateWindow
 */
-	WM_HWIN CreateWindow(void);
-	WM_HWIN CreateWindow(void) {
+WM_HWIN CreateWindow(void);
+WM_HWIN CreateWindow(void) {
   WM_HWIN hWin;
 
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
