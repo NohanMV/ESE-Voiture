@@ -2238,7 +2238,7 @@ Image component sizes
       1212         94          0          8        160       8082   gpdma_lpc17xx.o
        172         18          0          0          0       2294   gpio_lpc17xx.o
        180         12         16          0          0       2522   led_mcb1700.o
-       452        106         16          4          0      19581   main.o
+       452        106         16          4          0      19577   main.o
        252          6          0          0          0        804   pin_lpc17xx.o
        126         26        104         20       6844       9127   rtx_conf_cm.o
       3904        106        124         16         40      53131   ssp_lpc17xx.o
@@ -2247,7 +2247,7 @@ Image component sizes
       5840        152        464          4         52      32891   uart_lpc17xx.o
 
     ----------------------------------------------------------------------
-     15324        662       7264         76       7608     165257   Object Totals
+     15324        662       7264         76       7608     165253   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         10          0          0          3          0          0   (incl. Padding)
 
@@ -2325,8 +2325,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     21776       1228       7324        116       7812     230722   Grand Totals
-     21776       1228       7324        116       7812     230722   ELF Image Totals
+     21776       1228       7324        116       7812     230718   Grand Totals
+     21776       1228       7324        116       7812     230718   ELF Image Totals
      21776       1228       7324        116          0          0   ROM Totals
 
 ==============================================================================

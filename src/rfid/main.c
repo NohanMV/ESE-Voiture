@@ -13,12 +13,14 @@ osThreadId ID_tache1;
 
 void CB_USART(uint32_t event)
 {
-	if (event & ARM_USART_EVENT_RECEIVE_COMPLETE){  // si fin d’émission...
+	if (event & ARM_USART_EVENT_RECEIVE_COMPLETE)  // si fin d’émission...
+	{
 		osSignalSet(ID_tache1,0x04); 
 	}
 }
 
-void Init_UART(void){
+void Init_UART(void)
+{
 	
 	Driver_USART1.Initialize(CB_USART);
 	Driver_USART1.PowerControl(ARM_POWER_FULL);
@@ -32,7 +34,8 @@ void Init_UART(void){
 	Driver_USART1.Control(ARM_USART_CONTROL_RX,1);
 }
 
-int compare_tableaux(unsigned char *tab1, unsigned char *tab2, unsigned int taille) {
+int compare_tableaux(unsigned char *tab1, unsigned char *tab2, unsigned int taille)
+{
     int i;
     for (i = 0; i < taille ; i++) 
 		{
@@ -41,12 +44,12 @@ int compare_tableaux(unsigned char *tab1, unsigned char *tab2, unsigned int tail
             return 1; // Les tableaux sont différents, retourne 0
 				}
 				 // Les tableaux sont identiques, retourne 1
-			}
+		}
 	return 0;
 }
 
-
-void RFID(void const * argument){	
+void RFID(void const * argument)
+{	
 	
 	
 	unsigned char tab[15];
@@ -56,38 +59,35 @@ void RFID(void const * argument){
 	int resultat;	
 	int i =0;
 		
-		while(1){
-			
-			for (i=0; i < 14 ; i++)
+		while(1)
 		{
-		Driver_USART1.Receive(tab+i, 1);
-		osSignalWait(0x04, osWaitForever);
-
-		}
-
-		sprintf(tabLCD, "%02X %02X %02X %02X %02X %02X", tab[0], tab[1], tab[2], tab[3], tab[4], tab[5]);
-		GLCD_DrawString(10, 24, tabLCD);
-		resultat=compare_tableaux(tab+1,soluce,12);
+			for (i=0; i < 14 ; i++)
+				{
+					Driver_USART1.Receive(tab+i, 1);
+					osSignalWait(0x04, osWaitForever);
+				}
+			sprintf(tabLCD, "%02X %02X %02X %02X %02X %02X", tab[0], tab[1], tab[2], tab[3], tab[4], tab[5]);
+			GLCD_DrawString(10, 24, tabLCD);
+			resultat=compare_tableaux(tab+1,soluce,12);
 			if(resultat == 1) 
-			{
-				GLCD_DrawString(0, 0,"ca marche pas");
-				LED_On(2)	;  //P1.31
-				osDelay(10000);
-				LED_Off(2);
-				//erreur, l'id ne correspond pas
-			}
-			else if(resultat == 0)
-			{
-				GLCD_DrawString(0, 0,"lets go     ");
-				LED_On(1)	; //P1.29	 
-				osDelay(10000);
-				LED_Off(1);	 
-				//super, l'id correspond.
-		  }	
-		
-	
+				{
+					GLCD_DrawString(0, 0,"ca marche pas");
+					LED_On(2)	;  //P1.31
+					osDelay(10000);
+					LED_Off(2);
+					//erreur, l'id ne correspond pas
+				}
+				else if(resultat == 0)
+				{
+					GLCD_DrawString(0, 0,"lets go      ");
+					LED_On(1)	; //P1.29	 
+					osDelay(10000);
+					LED_Off(1);	 
+					//super, l'id correspond.
+				}		
+		}
 }
-}
+
 osThreadDef (RFID, osPriorityBelowNormal, 1, 0);
 int main (void)
 {
@@ -100,7 +100,6 @@ int main (void)
 	GLCD_ClearScreen();
 	GLCD_SetFont(&GLCD_Font_16x24);
 	osKernelStart() ;
-	osDelay(osWaitForever) ;
-	
+	osDelay(osWaitForever);
 } 
 
