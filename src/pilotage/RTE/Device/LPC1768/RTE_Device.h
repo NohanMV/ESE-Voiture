@@ -933,12 +933,12 @@
 
 // <e> SPI (Serial Peripheral Interface) [Driver_SPI2]
 // <i> Configuration settings for Driver_SPI2 in component ::Drivers:SPI
-#define   RTE_SPI                       0
+#define   RTE_SPI                       1
 
 //   <h> Pin Configuration
 //     <o> SPI_SSEL <0=>Not used <1=>P0_16
 //     <i> Slave Select for SPI
-#define   RTE_SPI_SSEL_PIN_SEL          0
+#define   RTE_SPI_SSEL_PIN_SEL          1
 #if      (RTE_SPI_SSEL_PIN_SEL == 0)
 #define   RTE_SPI_SSEL_PIN_EN           0
 #elif    (RTE_SPI_SSEL_PIN_SEL == 1)
@@ -963,7 +963,7 @@
 #endif
 //     <o> SPI_MISO <0=>Not used <1=>P0_17
 //     <i> Master In Slave Out for SPI
-#define   RTE_SPI_MISO_PIN_SEL          0
+#define   RTE_SPI_MISO_PIN_SEL          1
 #if      (RTE_SPI_MISO_PIN_SEL == 0)
   #define RTE_SPI_MISO_PIN_EN           0
 #elif    (RTE_SPI_MISO_PIN_SEL == 1)
@@ -979,7 +979,7 @@
 
 //     <o> SPI_MOSI <0=>Not used <1=>P0_18
 //     <i> Master Out Slave In for SPI
-#define   RTE_SPI_MOSI_PIN_SEL          0
+#define   RTE_SPI_MOSI_PIN_SEL          1
 #if      (RTE_SPI_MOSI_PIN_SEL == 0)
   #define RTE_SPI_MOSI_PIN_EN           0
 #elif    (RTE_SPI_MOSI_PIN_SEL == 1)

@@ -2,6 +2,7 @@
 #include "Driver_USART.h"  
 #include "GLCD_Config.h"                // Keil.MCB1700::Board Support:Graphic LCD
 #include "LPC17xx.h"                    // Device header
+#include "GPIO.h"
 #include "GPIO_LPC17xx.h"               // Keil::Device:GPIO
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,7 +56,7 @@ void motReculer (void const *argument);
 osThreadId ID_recepUSART1;
 osThreadId ID_pilotage;
 
-osThreadDef(recepUSART1, osPriorityHigh,1,0);
+osThreadDef(recepUSART1, osPriorityNormal,1,0);
 osThreadDef(pilotage, osPriorityNormal,1,0);
 
 osMutexId ID_mut_GLCD; // Mutex pour accès LCD
@@ -64,7 +65,10 @@ osMutexDef (mut_GLCD);
 int joyX, joyY;
 
 int main(void){
+	osKernelInitialize() ;
 	
+	//Initialise_GPIO();
+	LPC_GPIO2->FIODIR0 |= (1 << 4);
 	init_TIMER0();
 	init_TIMER1();
 	init_PWM();
@@ -86,76 +90,35 @@ void init_TIMER0(void) {
 	LPC_SC->PCONP |= (1<<SBIT_TIMER0);
 	LPC_TIM0->PR=0;
 	LPC_TIM0->MR0 = 499999;
+	LPC_TIM0->MCR |= (3<<0);
+	NVIC_SetPriority(TIMER0_IRQn,0);
 	NVIC_EnableIRQ(TIMER0_IRQn);
+	LPC_TIM0->TCR = 1;
 }
 
 void init_TIMER1(void) {
 	LPC_SC->PCONP |= (1<<SBIT_TIMER1);
-	LPC_TIM0->PR=0;
-	LPC_TIM0->MR0 = 349999;
+	LPC_TIM1->PR=0;
+	LPC_TIM1->MR0 = 35000;
+	LPC_TIM1->MCR |= (3<<0);
+	NVIC_SetPriority(TIMER1_IRQn,0);
 	NVIC_EnableIRQ(TIMER1_IRQn);
 }
 
 void TIMER0_IRQHandler(void) {
 	LPC_TIM0->IR |= (1<<0);
+	//GPIO_PinWrite(2,4,1);
+	LPC_GPIO2->FIOPIN0 |= (1<<4);
+	LPC_TIM1->TCR = 1;
 }
 
 void TIMER1_IRQHandler(void) {
 	LPC_TIM1->IR |= (1<<0);
-	GPIO_PinWrite(2,12,1);
+	//GPIO_PinWrite(2,4,1);
+	LPC_GPIO2->FIOPIN0 &= ~(1<<4);
+	LPC_TIM1->TCR = 0;
 }
 
-//void init_TIMER0(void) {
-//	LPC_TIM0->PR=0;
-//	LPC_TIM0->MR0 = 499999;
-//	LPC_TIM0->MCR |= (3<<0);
-//	
-//	NVIC_SetPriority(TIMER0_IRQn,1);
-//	NVIC_EnableIRQ(TIMER0_IRQn);
-//  LPC_TIM0->TCR = 1;
-//}
-
-//void init_TIMER1(void) {
-//	LPC_TIM1->PR=0;
-//	LPC_TIM1->MR0 = 37499  ;
-//	LPC_TIM1->MCR |= (3<<0);
-//	
-//	NVIC_SetPriority(TIMER1_IRQn,0);
-//	NVIC_EnableIRQ(TIMER1_IRQn);
-//}
-
-//void TIMER0_IRQHandler(void) {
-//	static char a,b;
-//	
-//	LPC_TIM0->IR |= (1<<0);
-//	GPIO_PinWrite(0,25,1);
-////	//LPC_GPIO3->FIOPIN3 = LPC_GPIO3->FIOPIN3 | (1<<2);
-////	
-////	
-////	LPC_TIM0->IR |= 1<<0; //baisse le drapeau dû à MR0
-////	if(a==0){
-////		//LPC_GPIO3->FIOPIN3 = LPC_GPIO3->FIOPIN3 & 0xFB;
-////		LPC_GPIO3->FIOPIN3 &= 0 << 1;
-////		GPIO_PinWrite(0, 25, 1);
-////		a=1;
-////	} else if(a==1){
-////		//LPC_GPIO3->FIOPIN3 = LPC_GPIO3->FIOPIN3 | 0x02;
-////		LPC_GPIO3->FIOPIN3 |= 1 << 1;
-////		GPIO_PinWrite(0, 25, 0);
-////		a=0;
-////	}
-////	//LPC_TIM0->TCR = 0 ; // Arret Timer
-////	 LPC_GPIO2->FIOPIN ^= (1<<LED1); /* Toggle the LED1 (P2_0) */
-////	
-//	LPC_TIM1->TCR = 1;
-//}
-
-//void TIMER1_IRQHandler(void) {
-//	LPC_TIM1->IR |= (1<<0);	
-//	GPIO_PinWrite(0,25,0);
-//	//LPC_GPIO3->FIOPIN3 = LPC_GPIO3->FIOPIN3 & (0<<2);
-//	LPC_TIM1->TCR = 0;
-//}
 
 void init_USART1(void){
 	Driver_USART1.Initialize(NULL);

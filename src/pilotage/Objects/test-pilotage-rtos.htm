@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\test-pilotage-rtos.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\test-pilotage-rtos.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Fri Mar 22 12:28:37 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Mon Mar 25 10:00:34 2024
 <BR><P>
 <H3>Maximum Stack Usage =        264 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -268,8 +268,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[78]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80 + Unknown Stack Size
-<LI>Call Chain = __rt_entry_main &rArr; main &rArr; osThreadCreate &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
+<BR><BR>[Stack]<UL><LI>Max Depth = 88 + Unknown Stack Size
+<LI>Call Chain = __rt_entry_main &rArr; main &rArr; osKernelInitialize &rArr; svcKernelInitialize &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
@@ -293,9 +293,9 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 80 + Unknown Stack Size
 <LI>Call Chain = _platform_post_lib_init &rArr; osKernelInitialize &rArr; svcKernelInitialize &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
-<BR>[Calls]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelInitialize
-<LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadCreate
+<BR>[Calls]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadCreate
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelStart
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelInitialize
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
 </UL>
 <BR>[Called By]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_postli_1
@@ -689,11 +689,11 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Set_Channel_active_flag
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Clear_Channel_active_flag
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Send
-<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Receive
-<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Transfer
+<BR>[Called By]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Transfer
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Send
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Receive
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Send
+<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Receive
 </UL>
 
 <P><STRONG><a name="[a6]"></a>GPDMA_ChannelDisable</STRONG> (Thumb, 44 bytes, Stack size 8 bytes, gpdma_lpc17xx.o(i.GPDMA_ChannelDisable))
@@ -701,16 +701,16 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Clear_Channel_active_flag
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_PowerControl
-<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Control
-<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_PowerControl
+<BR>[Called By]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_PowerControl
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Control
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_PowerControl
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Control
 </UL>
 
 <P><STRONG><a name="[b8]"></a>GPDMA_ChannelGetCount</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, gpdma_lpc17xx.o(i.GPDMA_ChannelGetCount))
-<BR><BR>[Called By]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetTxCount
+<BR><BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_GetDataCount
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetTxCount
 <LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetRxCount
-<LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_GetDataCount
 </UL>
 
 <P><STRONG><a name="[a7]"></a>GPDMA_Initialize</STRONG> (Thumb, 154 bytes, Stack size 8 bytes, gpdma_lpc17xx.o(i.GPDMA_Initialize))
@@ -718,16 +718,16 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_ClearPendingIRQ
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Initialize
-<LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Initialize
+<BR>[Called By]<UL><LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Initialize
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Initialize
 </UL>
 
 <P><STRONG><a name="[b9]"></a>GPDMA_PeripheralSelect</STRONG> (Thumb, 62 bytes, Stack size 8 bytes, gpdma_lpc17xx.o(i.GPDMA_PeripheralSelect))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = GPDMA_PeripheralSelect
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Send
+<BR>[Called By]<UL><LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Initialize
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Send
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Receive
-<LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Initialize
 </UL>
 
 <P><STRONG><a name="[a9]"></a>GPDMA_Uninitialize</STRONG> (Thumb, 116 bytes, Stack size 8 bytes, gpdma_lpc17xx.o(i.GPDMA_Uninitialize))
@@ -735,8 +735,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_ClearPendingIRQ
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Uninitialize
-<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Uninitialize
+<BR>[Called By]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Uninitialize
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Uninitialize
 </UL>
 
 <P><STRONG><a name="[111]"></a>GPIO_PinRead</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, gpio_lpc17xx.o(i.GPIO_PinRead))
@@ -751,8 +751,6 @@ Global Symbols
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rd_id_man
 <LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GLCD_Initialize
 <LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pilotage
-<LI><a href="#[10]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIMER1_IRQHandler
-<LI><a href="#[f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIMER0_IRQHandler
 </UL>
 
 <P><STRONG><a name="[9c]"></a>GPIO_PortClock</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, gpio_lpc17xx.o(i.GPIO_PortClock))
@@ -771,15 +769,15 @@ Global Symbols
 <P><STRONG><a name="[9d]"></a>PIN_Configure</STRONG> (Thumb, 246 bytes, Stack size 24 bytes, pin_lpc17xx.o(i.PIN_Configure))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = PIN_Configure
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Uninitialize
-<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_PowerControl
-<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Initialize
-<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Control
-<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Uninitialize
+<BR>[Called By]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Uninitialize
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Initialize
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSPx_Control
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rd_id_man
 <LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GLCD_Initialize
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Uninitialize
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_PowerControl
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Initialize
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Control
 </UL>
 
 <P><STRONG><a name="[4d]"></a>SSP1_GPDMA_Rx_SignalEvent</STRONG> (Thumb, 14 bytes, Stack size 8 bytes, ssp_lpc17xx.o(i.SSP1_GPDMA_Rx_SignalEvent))
@@ -816,18 +814,10 @@ Global Symbols
 <P><STRONG><a name="[34]"></a>SystemInit</STRONG> (Thumb, 302 bytes, Stack size 0 bytes, system_lpc17xx.o(i.SystemInit))
 <BR>[Address Reference Count : 1]<UL><LI> startup_lpc17xx.o(.text)
 </UL>
-<P><STRONG><a name="[f]"></a>TIMER0_IRQHandler</STRONG> (Thumb, 36 bytes, Stack size 8 bytes, main.o(i.TIMER0_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = TIMER0_IRQHandler &rArr; GPIO_PinWrite
-</UL>
-<BR>[Calls]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_PinWrite
-</UL>
+<P><STRONG><a name="[f]"></a>TIMER0_IRQHandler</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, main.o(i.TIMER0_IRQHandler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_lpc17xx.o(RESET)
 </UL>
-<P><STRONG><a name="[10]"></a>TIMER1_IRQHandler</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, main.o(i.TIMER1_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = TIMER1_IRQHandler &rArr; GPIO_PinWrite
-</UL>
-<BR>[Calls]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_PinWrite
-</UL>
+<P><STRONG><a name="[10]"></a>TIMER1_IRQHandler</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, main.o(i.TIMER1_IRQHandler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_lpc17xx.o(RESET)
 </UL>
 <P><STRONG><a name="[14]"></a>UART1_IRQHandler</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, uart_lpc17xx.o(i.UART1_IRQHandler))
@@ -891,7 +881,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d0]"></a>init_TIMER0</STRONG> (Thumb, 48 bytes, Stack size 8 bytes, main.o(i.init_TIMER0))
+<P><STRONG><a name="[d0]"></a>init_TIMER0</STRONG> (Thumb, 64 bytes, Stack size 8 bytes, main.o(i.init_TIMER0))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = init_TIMER0 &rArr; __NVIC_SetPriority
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_SetPriority
@@ -900,7 +890,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d3]"></a>init_TIMER1</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, main.o(i.init_TIMER1))
+<P><STRONG><a name="[d3]"></a>init_TIMER1</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, main.o(i.init_TIMER1))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = init_TIMER1 &rArr; __NVIC_SetPriority
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_SetPriority
@@ -968,12 +958,13 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrMessagePut
 </UL>
 
-<P><STRONG><a name="[4b]"></a>main</STRONG> (Thumb, 82 bytes, Stack size 8 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = main &rArr; osThreadCreate &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
+<P><STRONG><a name="[4b]"></a>main</STRONG> (Thumb, 102 bytes, Stack size 8 bytes, main.o(i.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = main &rArr; osKernelInitialize &rArr; svcKernelInitialize &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadCreate
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMutexCreate
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelStart
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelInitialize
 <LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GLCD_SetFont
 <LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GLCD_Initialize
@@ -997,6 +988,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[3a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcKernelInitialize
 </UL>
 <BR>[Called By]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_platform_post_lib_init
+<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[80]"></a>osKernelStart</STRONG> (Thumb, 98 bytes, Stack size 32 bytes, rt_cmsis.o(i.osKernelStart))
@@ -1821,11 +1813,11 @@ Local Symbols
 <P><STRONG><a name="[aa]"></a>SSPx_Control</STRONG> (Thumb, 1310 bytes, Stack size 56 bytes, ssp_lpc17xx.o(i.SSPx_Control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = SSPx_Control &rArr; PIN_Configure
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_ChannelDisable
-<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetSSPClockFreq
+<BR>[Calls]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetSSPClockFreq
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
 <LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetDir
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_PinWrite
+<LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_ChannelDisable
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSP1_Control
@@ -1854,9 +1846,9 @@ Local Symbols
 <P><STRONG><a name="[b0]"></a>SSPx_Initialize</STRONG> (Thumb, 168 bytes, Stack size 16 bytes, ssp_lpc17xx.o(i.SSPx_Initialize))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = SSPx_Initialize &rArr; PIN_Configure
 </UL>
-<BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_PeripheralSelect
+<BR>[Calls]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
+<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_PeripheralSelect
 <LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_Initialize
-<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSP1_Initialize
@@ -1865,8 +1857,8 @@ Local Symbols
 <P><STRONG><a name="[b1]"></a>SSPx_PowerControl</STRONG> (Thumb, 438 bytes, Stack size 16 bytes, ssp_lpc17xx.o(i.SSPx_PowerControl))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = SSPx_PowerControl &rArr; GPDMA_ChannelDisable
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_ChannelDisable
-<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_ClearPendingIRQ
+<BR>[Calls]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_ClearPendingIRQ
+<LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_ChannelDisable
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSP1_PowerControl
@@ -1899,8 +1891,8 @@ Local Symbols
 <P><STRONG><a name="[b5]"></a>SSPx_Uninitialize</STRONG> (Thumb, 112 bytes, Stack size 16 bytes, ssp_lpc17xx.o(i.SSPx_Uninitialize))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = SSPx_Uninitialize &rArr; PIN_Configure
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_Uninitialize
-<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
+<BR>[Calls]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
+<LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_Uninitialize
 </UL>
 <BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SSP1_Uninitialize
 </UL>
@@ -1912,8 +1904,8 @@ Local Symbols
 <P><STRONG><a name="[cb]"></a>GetUsartClockFreq</STRONG> (Thumb, 62 bytes, Stack size 12 bytes, uart_lpc17xx.o(i.GetUsartClockFreq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = GetUsartClockFreq
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Control
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SetBaudrate
+<BR>[Called By]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SetBaudrate
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Control
 </UL>
 
 <P><STRONG><a name="[65]"></a>USART1_Control</STRONG> (Thumb, 18 bytes, Stack size 16 bytes, uart_lpc17xx.o(i.USART1_Control))
@@ -2010,10 +2002,10 @@ Local Symbols
 <P><STRONG><a name="[bc]"></a>USART_Control</STRONG> (Thumb, 1642 bytes, Stack size 40 bytes, uart_lpc17xx.o(i.USART_Control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = USART_Control &rArr; USART_SetBaudrate &rArr; __aeabi_uldivmod
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetUsartClockFreq
-<LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_ChannelDisable
-<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
+<BR>[Calls]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SetBaudrate
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetUsartClockFreq
+<LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_ChannelDisable
 </UL>
 <BR>[Called By]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART1_Control
 </UL>
@@ -2073,8 +2065,8 @@ Local Symbols
 <P><STRONG><a name="[c4]"></a>USART_Initialize</STRONG> (Thumb, 254 bytes, Stack size 16 bytes, uart_lpc17xx.o(i.USART_Initialize))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = USART_Initialize &rArr; PIN_Configure
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_Initialize
-<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
+<BR>[Calls]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
+<LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_Initialize
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART1_Initialize
 </UL>
@@ -2082,9 +2074,9 @@ Local Symbols
 <P><STRONG><a name="[c5]"></a>USART_PowerControl</STRONG> (Thumb, 592 bytes, Stack size 24 bytes, uart_lpc17xx.o(i.USART_PowerControl))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = USART_PowerControl &rArr; PIN_Configure
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_ClearPendingIRQ
+<BR>[Calls]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__NVIC_ClearPendingIRQ
 <LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_ChannelDisable
-<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART1_PowerControl
 </UL>
@@ -2136,8 +2128,8 @@ Local Symbols
 <P><STRONG><a name="[ca]"></a>USART_Uninitialize</STRONG> (Thumb, 226 bytes, Stack size 16 bytes, uart_lpc17xx.o(i.USART_Uninitialize))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = USART_Uninitialize &rArr; PIN_Configure
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_Uninitialize
-<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
+<BR>[Calls]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIN_Configure
+<LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_Uninitialize
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART1_Uninitialize
 </UL>
@@ -2152,9 +2144,9 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[91]"></a>Clear_Channel_active_flag</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, gpdma_lpc17xx.o(i.Clear_Channel_active_flag))
-<BR><BR>[Called By]<UL><LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_ChannelDisable
+<BR><BR>[Called By]<UL><LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_IRQHandler
+<LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_ChannelDisable
 <LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPDMA_ChannelConfigure
-<LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA_IRQHandler
 </UL>
 
 <P><STRONG><a name="[a5]"></a>Set_Channel_active_flag</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, gpdma_lpc17xx.o(i.Set_Channel_active_flag))
