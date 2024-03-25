@@ -1,106 +1,21 @@
-/**
-  ******************************************************************************
-  * @file    Templates/Src/main.c 
-  * @author  MCD Application Team
-  * @brief   STM32F4xx HAL API Template project 
-  *
-  * @note    modified by ARM
-  *          The modifications allow to use this file as User Code Template
-  *          within the Device Family Pack.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
-  */
-
-/* Includes ------------------------------------------------------------------*/
-#include "main.h"
-#include "Board_LED.h"                  // ::Board Support:LED
-#include "Driver_WiFi.h"                // ARM::CMSIS Driver:WiFi:Custom
+#include "LPC17xx.h"                    // Device header
 #include "Driver_USART.h"               // ::CMSIS Driver:USART
-
-
-extern ARM_DRIVER_USART Driver_USART1;
-
-
-#ifdef _RTE_
+#include "Board_GLCD.h"                 // ::Board Support:Graphic LCD
+#include "GLCD_Config.h"                // Keil.MCB1700::Board Support:Graphic LCD
 #include "RTE_Components.h"             // Component selection
-#endif
-#ifdef RTE_CMSIS_RTOS2                  // when RTE component CMSIS RTOS2 is used
-#include "cmsis_os2.h"                  // ::CMSIS:RTOS2
-#endif
+#include <stdio.h>      
+#include <stdlib.h>
+#include "cmsis_os.h"                   // ARM::CMSIS:RTOS:Keil RTX
+#include "fonctionGPS.h"
+#include <string.h>
 
-#ifdef RTE_CMSIS_RTOS2_RTX5
-/**
-  * Override default HAL_GetTick function
-  */
-uint32_t HAL_GetTick (void) {
-  static uint32_t ticks = 0U;
-         uint32_t i;
+//TX P0.15
+//RX P0.16
+extern ARM_DRIVER_USART Driver_USART1;
+extern GLCD_FONT GLCD_Font_16x24 ; 
 
-  if (osKernelGetState () == osKernelRunning) {
-    return ((uint32_t)osKernelGetTickCount ());
-  }
-
-  /* If Kernel is not running wait approximately 1 ms then increment 
-     and return auxiliary tick counter value */
-  for (i = (SystemCoreClock >> 14U); i > 0U; i--) {
-    __NOP(); __NOP(); __NOP(); __NOP(); __NOP(); __NOP();
-    __NOP(); __NOP(); __NOP(); __NOP(); __NOP(); __NOP();
-  }
-  return ++ticks;
-}
-
-#endif
-
-/** @addtogroup STM32F4xx_HAL_Examples
-  * @{
-  */
-
-/** @addtogroup Templates
-  * @{
-  */
-
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
-static void SystemClock_Config(void);
-static void Error_Handler(void);
-
-/* Private functions ---------------------------------------------------------*/
-/**
-  * @brief  Main program
-  * @param  None
-  * @retval None
-  */
-	
-void Init_UART(void){
+void Init_UART(void)
+{
 	Driver_USART1.Initialize(NULL);
 	Driver_USART1.PowerControl(ARM_POWER_FULL);
 	Driver_USART1.Control(	ARM_USART_MODE_ASYNCHRONOUS |
@@ -113,161 +28,111 @@ void Init_UART(void){
 	Driver_USART1.Control(ARM_USART_CONTROL_RX,1);
 }
 
-int main(void)
-{
 
-  /* STM32F4xx HAL library initialization:
-       - Configure the Flash prefetch, Flash preread and Buffer caches
-       - Systick timer is configured by default as source of time base, but user 
-             can eventually implement his proper time base source (a general purpose 
-             timer for example or other time source), keeping in mind that Time base 
-             duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
-             handled in milliseconds basis.
-       - Low Level Initialization
-     */
-  HAL_Init();
+void traitementGPS(unsigned char *dataGPS){
+	
+    char trameID[4] ; // récupère l'identifiant de la trame GPS
+		char inutile[100]; // stocke les données de la trame inutile
+	  char coordonees[50]; // stocke les données de la trame utile
+	
+    double longitude,latitude; // récupere données GPS
+	  char Tab_longitude[20], Tab_latitude[20]; // affichage valeurs
 
-  /* Configure the system clock to 168 MHz */
-  SystemClock_Config();
-  SystemCoreClockUpdate();
+    char dirLong,dirLat; // récupère direction GPS
+		char Tab_dirLong[5], Tab_dirLat[5]; // affichage valeurs
+	
+    int i; 
+	
+		for(i=0;dataGPS[i]!=0;i++)// remplace les , par un espace dans la chaine
+		{
+				if (dataGPS[i]==',')
+						dataGPS[i]=' ';
+		}
 
-  /* Add your application code here
-     */
-	uint8_t tab[50];
-	Init_UART();
-	LED_Initialize();
+		// Utilisation de sscanf pour extraire les entiers du tableau de caractères
+		sscanf(dataGPS,"GP%s %lf %c %lf %c %s", trameID,&longitude,&dirLong,&latitude,&dirLat,inutile);
+				
+		sprintf(Tab_longitude,".3%lf",longitude);
+		sprintf(Tab_latitude,"%lf",latitude);
+		sprintf(Tab_dirLong,"%c",dirLong);
+		sprintf(Tab_dirLat,"%c",dirLat);
+    
+		// méthode qui permet de vérifier si une trameID nous est utile
+		if(checkIDtrame(trameID) == 0) // si oui GGA
+		{
+			GLCD_DrawString(10, 50,"Longitude:");	
+			GLCD_DrawString(150, 50,Tab_longitude);
+			GLCD_DrawString(10, 90,"Latitude:");	
+			GLCD_DrawString(150, 90,Tab_latitude);
+			GLCD_DrawString(10, 130,"Direction:");	
+//		GLCD_DrawString(180, 130,Tab_dirLong);	
+//		GLCD_DrawString(200, 130,Tab_dirLat);
+		  GLCD_DrawString(10, 10,"Trame ID:");		
+			GLCD_DrawString(150, 10,trameID);
+			delay_ms(2000);
+			GLCD_ClearScreen();
+		}
+		else // si non
+		{
+			GLCD_DrawString(10, 44,trameID);
+
+			GLCD_ClearScreen();
+		}
+}
+
 	
 
-#ifdef RTE_CMSIS_RTOS2	// A commenter si utilisation RTOS
-  /* Initialize CMSIS-RTOS2 */
-  osKernelInitialize ();
+int main(void)
+{
+	unsigned char dataGPS[100], test[1];
+	int i;
 
-  /* Create thread functions that start executing, 
-  Example: osThreadNew(app_main, NULL, NULL); */
+	Init_UART();
+	GLCD_Initialize();
+	GLCD_ClearScreen();
+  GLCD_SetFont(&GLCD_Font_16x24);
+	
+//#ifdef RTE_CMSIS_RTOS2	// A commenter si utilisation RTOS
+//  /* Initialize CMSIS-RTOS2 */
+//  osKernelInitialize ();
 
-  /* Start thread execution */
-  osKernelStart();
-#endif
+//  /* Create thread functions that start executing, 
+//  Example: osThreadNew(app_main, NULL, NULL); */
+
+//  /* Start thread execution */
+//  osKernelStart();
+//#endif
 
   /* Infinite loop */
+	
 	while (1){
-		while(Driver_USART1.GetStatus().tx_busy == 1); // attente buffer TX vide
-		Driver_USART1.Send("\n\rHello World!!!",16);
 		
-		Driver_USART1.Receive(tab,12);
+		do
+		{
+			Driver_USART1.Receive(test,1); // tableau de 1 case
+			while (Driver_USART1.GetRxCount() <1 ); // on attend que 1 case soit pleine
+			//GLCD_DrawString(10,34,test);
+	  }while(test[0] != '$');
+		//GLCD_DrawString(10,34,"ok");
+        
+		Driver_USART1.Receive(dataGPS ,100); 
+		while (Driver_USART1.GetRxCount() <1 ); // on attend que 1 case soit pleine
+		
+		traitementGPS(dataGPS);
+		
+	  
+		
+//		for (i = 0 ; i < 100 ; i ++)
+//		{
+//   	GLCD_DrawString(10+3*i, 24, (const char *)dataGPS[i]);
+//		temporisation_ms(5000);
+//		}
+		
+
+
+
+//		sprintf(tab, "%02X%02X%02X%02X%02X ",dataGPS[0] , dataGPS[1] , dataGPS[2] , dataGPS[3]  ,dataGPS[4]);
+//		GLCD_DrawString(10, 24, tab);
 	}	
+	
 }
-
-/**
-  * @brief  System Clock Configuration
-  *         The system Clock is configured as follow : 
-  *            System Clock source            = PLL (HSE)
-  *            SYSCLK(Hz)                     = 168000000
-  *            HCLK(Hz)                       = 168000000
-  *            AHB Prescaler                  = 1
-  *            APB1 Prescaler                 = 4
-  *            APB2 Prescaler                 = 2
-  *            HSE Frequency(Hz)              = 8000000
-  *            PLL_M                          = 8
-  *            PLL_N                          = 336
-  *            PLL_P                          = 2
-  *            PLL_Q                          = 7
-  *            VDD(V)                         = 3.3
-  *            Main regulator output voltage  = Scale1 mode
-  *            Flash Latency(WS)              = 5
-  * @param  None
-  * @retval None
-  */
-static void SystemClock_Config(void)
-{
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-
-  /* Enable Power Control clock */
-  __HAL_RCC_PWR_CLK_ENABLE();
-
-  /* The voltage scaling allows optimizing the power consumption when the device is 
-     clocked below the maximum system frequency, to update the voltage scaling value 
-     regarding system frequency refer to product datasheet.  */
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-  /* Enable HSE Oscillator and activate PLL with HSE as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 336;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
-  if(HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    /* Initialization Error */
-    Error_Handler();
-  }
-
-  /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 
-     clocks dividers */
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;  
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;  
-  if(HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
-  {
-    /* Initialization Error */
-    Error_Handler();
-  }
-
-  /* STM32F405x/407x/415x/417x Revision Z devices: prefetch is supported */
-  if (HAL_GetREVID() == 0x1001)
-  {
-    /* Enable the Flash prefetch */
-    __HAL_FLASH_PREFETCH_BUFFER_ENABLE();
-  }
-}
-
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @param  None
-  * @retval None
-  */
-static void Error_Handler(void)
-{
-  /* User may add here some code to deal with this error */
-  while(1)
-  {
-  }
-}
-
-#ifdef  USE_FULL_ASSERT
-
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t* file, uint32_t line)
-{ 
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-
-  /* Infinite loop */
-  while (1)
-  {
-  }
-}
-
-#endif
-
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */ 
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
