@@ -51,6 +51,11 @@ WM_HWIN CreateWindow(void);
  *      GUIThread: GUI Thread for Single-Task Execution Model
  *---------------------------------------------------------------------------*/
 
+void CANthreadT(void const *argument);
+osThreadId id_CANthreadT;
+osThreadDef(CANthreadT,osPriorityNormal, 1,0);
+
+
 void CANthreadR(void const *argument);
 osThreadId id_CANthreadR;
 osThreadDef(CANthreadR,osPriorityNormal, 1,0);
@@ -158,9 +163,6 @@ static void CPU_CACHE_Enable (void) {
 
 void GUIThread (void const *argument) {
 	ARM_CAN_MSG_INFO   rx_msg_info;
-
-	uint8_t data_buf[8];
-	int   taille,i;
 	WM_HWIN hDlg;
 
   GUI_Init();
@@ -171,24 +173,25 @@ void GUIThread (void const *argument) {
 		GUI_Delay(10);
 		if (variable==1)
 		{
+			variable=0;
 			while(Driver_USART6.GetStatus().tx_busy == 1); // attente buffer TX vide
 			Driver_USART6.Send("1",1);
-			variable=0;
 		}
 
 		GUI_X_ExecIdle();             /* Nothing left to do for the moment ... Idle processing */
-		
   }
 }
 
 void myCAN1_callback(uint32_t obj_idx, uint32_t event){
-
-
   if (event & ARM_CAN_EVENT_RECEIVE)
 	 {
 			Driver_CAN1.MessageRead(0, &rx_msg_info, data_buf, 8); // 8 data max
 			osSignalSet(id_CANthreadR, 0x01);			
-		}
+	 }
+	 if (event & ARM_CAN_EVENT_SEND_COMPLETE)
+	 {
+			osSignalSet(id_CANthreadT, 0x01);
+	 }
 }
 
 
@@ -205,14 +208,10 @@ void InitCan1 (void) {
                           ARM_CAN_BIT_SJW(1U));                // Resynchronization jump width is same as phase segment 2
 	
 	// Mettre ici les filtres ID de réception sur objet 0
-	//....................................................
-	// Filtre objet 0 sur uniquement identifiant 0x0f6
 	Driver_CAN1.ObjectSetFilter( 0,ARM_CAN_FILTER_ID_MASKABLE_ADD ,ARM_CAN_STANDARD_ID(0x000),0X000) ; // non nécessaire ici
-	
-	
+	// Filtre objet 0 sur uniquement identifiant 0x0f6
 	Driver_CAN1.ObjectConfigure(0,ARM_CAN_OBJ_RX);				// Objet 0 du CAN1 pour réception
 	Driver_CAN1.ObjectConfigure(2,ARM_CAN_OBJ_TX);				// Objet 2 du CAN1 pour emission
-
 	Driver_CAN1.SetMode(ARM_CAN_MODE_NORMAL);					// fin init
 }
 
@@ -250,7 +249,27 @@ void CANthreadR(void const *argument)
 	identifiant = rx_msg_info.id; // (int)
 	retour = data_buf[0] ; // 1ère donnée de la trame récupérée (char)
 	taille = rx_msg_info.dlc; // nb data (char)
-	}
+
+}
+}
+
+void CANthreadT(void const *argument)
+{
+	ARM_CAN_MSG_INFO                tx_msg_info;
+	uint8_t data_buf[8];
+	uint8_t tab[10];
+	while (1) {
+		// Code pour envoyer trame Id 0x0f6 
+		//.............
+		tx_msg_info.id = ARM_CAN_STANDARD_ID(0x108);
+		tx_msg_info.rtr = 0; // 0 = trame DATA
+		data_buf[0] = 0xAA; // data à envoyer à placer dans un tableau de char
+		Driver_CAN1.MessageSend(1, &tx_msg_info, tab, 8); // 1 data à envoyer
+		
+		osSignalWait(0x01, osWaitForever);		// sommeil en attente fin emission
+
+		
+	}		
 }
 
 int main (void) {
@@ -271,6 +290,8 @@ int main (void) {
   Init_GUIThread();
 	
 	id_CANthreadR = osThreadCreate (osThread(CANthreadR), NULL);
+	id_CANthreadT = osThreadCreate (osThread(CANthreadT), NULL);
+
 
   osKernelStart ();                         // start thread execution 
   osDelay(osWaitForever);
