@@ -14,5 +14,5 @@
 .\objects\uart_lpc17xx.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\uart_lpc17xx.o: C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver\PIN_LPC17xx.h
 .\objects\uart_lpc17xx.o: C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver\GPDMA_LPC17xx.h
-.\objects\uart_lpc17xx.o: U:\ESE-Voiture-main\src\lidar\RTE\Device\LPC1768\RTE_Device.h
-.\objects\uart_lpc17xx.o: U:\ESE-Voiture-main\src\lidar\RTE\RTE_Components.h
+.\objects\uart_lpc17xx.o: U:\ESE-Voiture-main-RTOS\src\lidar\RTE\Device\LPC1768\RTE_Device.h
+.\objects\uart_lpc17xx.o: U:\ESE-Voiture-main-RTOS\src\lidar\RTE\RTE_Components.h

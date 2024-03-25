@@ -7,7 +7,7 @@
 #include <math.h>
 #include "cmsis_os.h" 
 
-
+#define PI 3.14159265  
 #define SBIT_CNTEN     0 
 #define SBIT_PWMEN     2
 #define SBIT_PWMMR0R   1
@@ -43,8 +43,8 @@ void LidarAffichageUART (char lidarQualite, unsigned short lidarAngle, unsigned 
 
 typedef struct {
 	char lidarQualite;
-	char lidarAngle;
-	char lidarDistance;
+	float lidarAngle;
+	float lidarDistance;
 } LidarINFO;
 
 osThreadId tid_myUART_Thread;
@@ -71,12 +71,13 @@ int main(void){
 	static char txSCAN[2] = {0xA5,0x20};
 	
 	GLCD_Initialize();
-	GLCD_SetBackgroundColor(GLCD_COLOR_BLUE);
+	GLCD_SetBackgroundColor(GLCD_COLOR_BLACK);
 	GLCD_ClearScreen();
-	GLCD_SetForegroundColor  (GLCD_COLOR_BLACK);
+	GLCD_SetForegroundColor  (GLCD_COLOR_WHITE);
 	GLCD_SetFont(&GLCD_Font_16x24);
 	
 	Init_USART0();
+	
 	
 	PWM_Init();
 	
@@ -111,15 +112,19 @@ void myUART_ThreadT(const void* argument) {
 }
 
 void myUART_ThreadR(const void* argument) {
-	
+		
 	osEvent EVretour;
 	
 	LidarINFO *ptrINFO;
 	
-	char 	rxSCAN[12], lidarAngle,lidarQualite, lidarDistance;
+	char 	rxSCAN[12];
+	char lidarQualite ;
+	float lidarAngle , lidarDistance;
 	static char txSCAN[2] = {0xA5,0x20};
+	
   Driver_USART0.Send(txSCAN,2);
 	osSignalWait(0x01, osWaitForever);
+
 	
 	//osMutexWait(ID_mut_GLCD, osWaitForever);		 // Début MUTEX
 
@@ -129,6 +134,7 @@ void myUART_ThreadR(const void* argument) {
 	EVretour = osSignalWait(0x04, osWaitForever);
 	
 	while (1) {
+		
 		Driver_USART0.Receive(rxSCAN,5);
 		EVretour = osSignalWait(0x04, osWaitForever);
 		
@@ -138,9 +144,9 @@ void myUART_ThreadR(const void* argument) {
 		 //osMutexRelease(ID_mut_GLCD);
 		 lidarQualite  = rxSCAN[0] >> 2;
 		
-		 if (lidarQualite > 32) { // Qualité min 50 par rapport à max de 64, augmentation précision
+		 if (lidarQualite > 30) { // Qualité min 50 par rapport à max de 64, augmentation précision
 			 
-				lidarAngle                = (((rxSCAN[2] << 7) | rxSCAN[1]) >> 1) / 64.0;
+				lidarAngle    = (((rxSCAN[2] << 8) | rxSCAN[1]) >> 1) / 64.0;
 				lidarDistance = ((rxSCAN[4] << 8)  | rxSCAN[3]) / 4.0;
 			 
 				ptrINFO = osMailAlloc (ID_MailInfo, osWaitForever);
@@ -157,7 +163,7 @@ void myUART_ThreadR(const void* argument) {
 }
 
 void PWM_Init(void) {
-    
+    	
     LPC_PINCON->PINSEL4 =  (1<<PWM_6); // Activer l'alimentation du périphérique PWM
 
     LPC_PWM1->PR = 0;         				 // Pas de pré-division
@@ -226,7 +232,9 @@ void LidarAffichageGLCD (void const * argument){
 	
 	LidarINFO *recep;
 	
-	char lcdQualite[12], lcdAngle[11], lcdDistance[17],valeur_recue,valeur_recue_Qualite,valeur_recue_Angle,valeur_recue_Distance;
+	char lcdQualite[12], lcdAngle[11], lcdDistance[17],valeur_recue,valeur_recue_Qualite;
+	float angle_val, distance_point,valeur_recue_Distance,	valeur_recue_Angle,x,y;
+
 	
 	while(1){
 		
@@ -238,21 +246,35 @@ void LidarAffichageGLCD (void const * argument){
 		valeur_recue_Distance = recep->lidarDistance ; 
     osMailFree(ID_MailInfo, recep);
 		
-		lcdQualite[11]='\0';
-		lcdAngle[10]='\0';
-		lcdDistance[16]='\0';
-
-		sprintf(lcdQualite, 	"Qualite: %2d", 	valeur_recue_Qualite);
-		sprintf(lcdAngle, 		"Angle: %3d", 		valeur_recue_Angle);
-		sprintf(lcdDistance, 	"Distance: %05d", valeur_recue_Distance);
+		angle_val = valeur_recue_Angle * (PI /180.0);
+		distance_point = valeur_recue_Distance *(120/400.0); 
 		
-		osMutexWait(ID_mut_GLCD, osWaitForever);
-		GLCD_DrawString(0, 1*24, 	lcdQualite);
-		GLCD_DrawString(0, 2*24, 	lcdAngle);
-		GLCD_DrawString(0, 3*24, 	lcdDistance);
-		osMutexRelease(ID_mut_GLCD);
-	}
+		x = distance_point*cos(angle_val);
+		y = distance_point*sin(angle_val);
+		
+		if (x >160)x=159;
+		if (x <-160)x=-160;
+		if (y >120)y=119;
+		if (y<-120)y=-120;
+		
+		GLCD_DrawPixel(x+160, y+120);
+		
+//		lcdQualite[11]='\0';
+//		lcdAngle[10]='\0';
+//		lcdDistance[16]='\0';
+
+//		sprintf(lcdQualite, 	"Qualite: %2d", 	valeur_recue_Qualite);
+//		sprintf(lcdAngle, 		"Angle: %3d", 		valeur_recue_Angle);
+//		sprintf(lcdDistance, 	"Distance: %05d", valeur_recue_Distance);
+//		
+//		osMutexWait(ID_mut_GLCD, osWaitForever);
+//		GLCD_DrawString(0, 1*24, 	lcdQualite);
+//		GLCD_DrawString(0, 2*24, 	lcdAngle);
+//		GLCD_DrawString(0, 3*24, 	lcdDistance);
+//		osMutexRelease(ID_mut_GLCD);
+//	
 }
+	}
 
 void LidarAffichageUART (char lidarQualite, unsigned short lidarAngle, unsigned short lidarDistance[]){
 	osThreadDef(updateDisplay, osPriorityNormal, 1, 0);
