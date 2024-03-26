@@ -32,9 +32,11 @@
 */
 #define ID_WINDOW_0 (GUI_ID_USER + 0x00)
 #define ID_TEXT_0 (GUI_ID_USER + 0x01)
-#define ID_TEXT_1 (GUI_ID_USER + 0x03)
-#define ID_BUTTON_0 (GUI_ID_USER + 0x04)
-#define ID_TEXT_2 (GUI_ID_USER + 0x05)
+#define ID_TEXT_1 (GUI_ID_USER + 0x02)
+#define ID_BUTTON_0 (GUI_ID_USER + 0x03)
+#define ID_TEXT_2 (GUI_ID_USER + 0x04)
+#define ID_TEXT_3 (GUI_ID_USER + 0x05)
+#define ID_TEXT_4 (GUI_ID_USER + 0x06)
 
 
 // USER START (Optionally insert additional defines)
@@ -64,9 +66,11 @@ extern char tab[20];
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 19, 2, 480, 272, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "Supervision IT2R", ID_TEXT_0, 30, 20, 160, 23, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "Id :", ID_TEXT_1, 26, 61, 157, 20, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Son", ID_BUTTON_0, 329, 195, 100, 40, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "Valeur", ID_TEXT_2, 24, 85, 80, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "Id :", ID_TEXT_1, 25, 146, 157, 20, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Son", ID_BUTTON_0, 348, 128, 100, 40, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "Valeur", ID_TEXT_2, 26, 175, 80, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "rfid", ID_TEXT_3, 30, 60, 80, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "valeur_rfid", ID_TEXT_4, 80, 60, 80, 20, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -109,6 +113,16 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     //
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
     TEXT_SetFont(hItem, GUI_FONT_16_1);
+    //
+    // Initialization of 'rfid'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
+    TEXT_SetFont(hItem, GUI_FONT_16B_1);
+    //
+    // Initialization of 'valeur_rfid'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_4);
+    TEXT_SetFont(hItem, GUI_FONT_16_1);
     // USER START (Optionally insert additional code for further widget initialization)
     // USER END
     break;
@@ -141,13 +155,24 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     WM_DefaultProc(pMsg);
     break;
   }
+	if (identifiant==0x404)
+	{
+		if(retour==0xff) sprintf(tab,"ouverture") ;
+		else sprintf(tab,"alarme");
+		hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_4 ); //direction 
+		TEXT_SetText(hItem, tab );
+	}
+	else
+	{
 	sprintf(tab,"id %x ",(short)identifiant) ;
 	hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_1 ); //diirection 
   TEXT_SetText(hItem, tab ); 
 	
 	sprintf(tab,"valeur %x ",(short)retour) ;
-	hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_2 ); //diirection 
-  TEXT_SetText(hItem, tab ); 
+	hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_2 ); //direction 
+	TEXT_SetText(hItem, tab );
+	}
+	
 	
 }
 
