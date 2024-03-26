@@ -83,10 +83,10 @@
         <yPos>-1</yPos>
       </MaxPosition>
       <NormalPosition>
-        <Top>154</Top>
-        <Left>261</Left>
-        <Right>1221</Right>
-        <Bottom>913</Bottom>
+        <Top>26</Top>
+        <Left>26</Left>
+        <Right>1466</Right>
+        <Bottom>785</Bottom>
       </NormalPosition>
     </WindowPosition>
     <MDIClientArea>
@@ -1357,7 +1357,7 @@
       <Doc>
         <Name>.\haut-parleur.c</Name>
         <ColumnNumber>0</ColumnNumber>
-        <TopLine>1</TopLine>
+        <TopLine>9</TopLine>
         <CurrentLine>28</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
@@ -1365,9 +1365,9 @@
       </Doc>
       <Doc>
         <Name>.\main.c</Name>
-        <ColumnNumber>22</ColumnNumber>
-        <TopLine>1</TopLine>
-        <CurrentLine>20</CurrentLine>
+        <ColumnNumber>50</ColumnNumber>
+        <TopLine>101</TopLine>
+        <CurrentLine>126</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>

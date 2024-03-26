@@ -14,7 +14,6 @@ extern ARM_DRIVER_CAN Driver_CAN1;
 osThreadId id_RFIDthread;
 osThreadId id_CANthreadT;
 
-uint8_t saisie[1];
 int resultat;
 
 void InitCan1 (void) {
@@ -28,13 +27,6 @@ void InitCan1 (void) {
                           ARM_CAN_BIT_PHASE_SEG1(1U) |         // Set phase segment 1 to 1 time quantum (sample point at 87.5% of bit time)
                           ARM_CAN_BIT_PHASE_SEG2(1U) |         // Set phase segment 2 to 1 time quantum (total bit is 8 time quanta long)
                           ARM_CAN_BIT_SJW(1U));                // Resynchronization jump width is same as phase segment 2
-	// Mettre ici les filtres ID de réception sur objet 0
-	//....................................................
-	// Filtre objet 0 sur uniquement identifiant 0x0f6
-	Driver_CAN1.ObjectSetFilter(0, ARM_CAN_FILTER_ID_EXACT_ADD ,ARM_CAN_STANDARD_ID(0x128),0) ; // non nécessaire ici
-
-	
-	
 	
 	Driver_CAN1.ObjectConfigure(0,ARM_CAN_OBJ_TX);		// Objet 0 du CAN1 pour transmission
 	Driver_CAN1.SetMode(ARM_CAN_MODE_NORMAL);					// fin init
@@ -128,20 +120,17 @@ void CANthreadT(void const *argument)
 {
 	ARM_CAN_MSG_INFO tx_msg_info;
 	uint8_t data_buf[8];
-	char tab[10];
-	char i;
-	while (1) {
-		osSignalWait(0x01, osWaitForever);		// sommeil en attente fin emission
-		
-		tx_msg_info.id = ARM_CAN_STANDARD_ID(0x404);
-		tx_msg_info.rtr = 0; // 0 = trame DATA
-		if (resultat==0) data_buf[0] = 0xFF; // data à envoyer à placer dans un tableau de char
-		else data_buf[0] = 0x00;
-		Driver_CAN1.MessageSend(1, &tx_msg_info, saisie, 8); // 1 data à envoyer
-		
-
-		
-	}		
+	while (1) 
+		{
+			osSignalWait(0x01, osWaitForever); // sommeil en attente fin emission
+			tx_msg_info.id = ARM_CAN_STANDARD_ID(0x404);
+			tx_msg_info.rtr = 0; // 0 = trame DATA
+			
+			if(resultat == 0) data_buf[0] = 0xFF; // data à envoyer à placer dans un tableau de char
+			else data_buf[0] = 0x00;
+			 
+			Driver_CAN1.MessageSend(1, &tx_msg_info, data_buf, 8); // 1 data à envoyer
+		}		
 }
 
 osThreadDef (RFID, osPriorityBelowNormal, 1, 0);
