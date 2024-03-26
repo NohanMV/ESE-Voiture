@@ -31,63 +31,69 @@ void Init_UART(void)
 
 void traitementGPS(unsigned char *dataGPS){
 	
-    char trameID[4] ; // récupère l'identifiant de la trame GPS
-		char inutile[100]; // stocke les données de la trame inutile
-	  char coordonees[50]; // stocke les données de la trame utile
+    char trameID[4] ; // rÃ©cupÃ¨re l'identifiant de la trame GPS
+		char inutile[100]; // stocke les donnÃ©es de la trame inutile
+	  char coordonees[21]; // stocke les donnÃ©es de la trame utile
 	
-    double longitude,latitude; // récupere données GPS
+    double longitude,latitude; // rÃ©cupere donnÃ©es GPS
 	  char Tab_longitude[20], Tab_latitude[20]; // affichage valeurs
 
-    char dirLong,dirLat; // récupère direction GPS
+    char dirLong,dirLat; // rÃ©cupÃ¨re direction GPS
 		char Tab_dirLong[5], Tab_dirLat[5]; // affichage valeurs
 	
     int i; 
 	
+    for (i = 0; i < 20; i++) {
+    coordonees[i] = dataGPS[i];
+}
+coordonees[4] = '\0'; // Ajouter le caractÃ¨re nul Ã  la 5Ã¨me position pour marquer la fin de la chaÃ®ne
+
+GLCD_DrawString(100, 100, (char*)coordonees);
 		for(i=0;dataGPS[i]!=0;i++)// remplace les , par un espace dans la chaine
 		{
 				if (dataGPS[i]==',')
-						dataGPS[i]=' ';
+						dataGPS[i]=' ';		
+	
+
 		}
-		
-    
-		// Utilisation de sscanf pour extraire les entiers du tableau de caractères
-		//             $GPGGA,123519,4807.038,N,01131.324,E,1,08,0.9,545.4,M,46.9,M, , *42
-		sscanf(dataGPS,"GP%s %s %lf %c %lf %c %s", trameID,inutile,&longitude,&dirLong,&latitude,&dirLat,inutile);
-		for (i = 0; i < 100; i++) {
-				dataGPS[i] = 0;
-				}
-		sprintf(Tab_longitude,".3%lf",longitude);
+    // "$GPGGA,123519,4807.038,N,01131.324,E,1,08,0.9,545.4,M,46.9,M, , *42"
+		// Utilisation de sscanf pour extraire les entiers du tableau de caractÃ¨res
+		sscanf(dataGPS,"GP%s %s %lf %c %lf %c %s", trameID,inutile, &longitude,&dirLong,&latitude,&dirLat,inutile);
+				
+		sprintf(Tab_longitude,"%lf",longitude);
 		sprintf(Tab_latitude,"%lf",latitude);
 		sprintf(Tab_dirLong,"%c",dirLong);
 		sprintf(Tab_dirLat,"%c",dirLat);
     
-		// méthode qui permet de vérifier si une trameID nous est utile
+		// mÃ©thode qui permet de vÃ©rifier si une trameID nous est utile
 		if(checkIDtrame(trameID) == 0) // si oui GGA
-			{
+		{
 			GLCD_DrawString(10, 50,"Longitude:");	
 			GLCD_DrawString(150, 50,Tab_longitude);
 			GLCD_DrawString(10, 90,"Latitude:");	
 			GLCD_DrawString(150, 90,Tab_latitude);
-			GLCD_DrawString(10, 130,"Direction:");	
-			GLCD_DrawString(180, 130,Tab_dirLong);	
-			GLCD_DrawString(200, 130,Tab_dirLat);
+//		GLCD_DrawString(10, 130,"Direction:");	
+//		GLCD_DrawString(180, 130,Tab_dirLong);	
+//		GLCD_DrawString(200, 130,Tab_dirLat);
 		  GLCD_DrawString(10, 10,"Trame ID:");		
 			GLCD_DrawString(150, 10,trameID);
-			delay(2000);
-
-			}
+			delay(50000);//3secondes d'affichage
+			GLCD_ClearScreen();
+		}
 		else // si non
-			{
+		{
 			GLCD_DrawString(10, 44,trameID);
+
+			GLCD_ClearScreen();
 		}
 }
+
 	
 
 int main(void)
 {
-	unsigned char dataGPS[100], test[1], test2[1];
-	int i;
-
+	unsigned char dataGPS[100], test[1],test2[1];
+	int i = 0;
 	Init_UART();
 	GLCD_Initialize();
 	GLCD_ClearScreen();
@@ -106,28 +112,38 @@ int main(void)
 
   /* Infinite loop */
 	
-	while (1){
-		
-		do
+	while (1)
 		{
-			Driver_USART1.Receive(test,1); // tableau de 1 case
-			while (Driver_USART1.GetRxCount() <1 ); // on attend que 1 case soit pleine
-			//GLCD_DrawString(10,34,test);
+				do
+				{
+					Driver_USART1.Receive(test,1); // tableau de 1 case
+					while (Driver_USART1.GetRxCount() <1 ); // on attend que 1 case soit pleine
+				}while(test[0] != '$');
 			
-	  }while(test[0] != '$');
-		//GLCD_DrawString(10,34,"ok");
-        
-		do
-		{			
+			
+				do
+				{			
 				Driver_USART1.Receive(test2 ,1); 
 				while (Driver_USART1.GetRxCount() <1 ); // on attend que 100 case soit pleine
 				dataGPS[i]=test2[0];
 				i++;
-			
-		}while(test2[0]!= '*');
-//			GLCD_DrawString(10,100,"aaa");
+				}while(test2[0]!= 0x0D);
+//				GLCD_DrawString(10,100,"aaa");
 				traitementGPS(dataGPS);
 		
-	}	
-	
+	  
+		
+//		for (i = 0 ; i < 100 ; i ++)
+//		{
+//   	GLCD_DrawString(10+3*i, 24, (const char *)dataGPS[i]);
+//		temporisation_ms(5000);
+//		}
+		
+
+
+
+//		sprintf(tab, "%02X%02X%02X%02X%02X ",dataGPS[0] , dataGPS[1] , dataGPS[2] , dataGPS[3]  ,dataGPS[4]);
+//		GLCD_DrawString(10, 24, tab);
+
+	}
 }

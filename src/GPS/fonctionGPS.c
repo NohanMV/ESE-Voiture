@@ -25,8 +25,8 @@ void setupTimer0() {
 }
 
 // Temporisation en millisecondes
-void delay_ms(uint32_t milliseconds) {
-    uint32_t ticks_to_wait = milliseconds;
+void delay(uint32_t tempo) {
+    uint32_t ticks_to_wait = tempo;
     setupTimer0();
     // Attendre jusqu'à ce que le compteur Timer0 atteigne la valeur de comparaison
     while (ticks_to_wait > 0) {
@@ -38,7 +38,22 @@ void delay_ms(uint32_t milliseconds) {
 }
 
 
+//void viderTableau(char tableau, int taille)
+//{
+//int i;
+//// Réinitialisation de chaque élément à '\0' pour vider une chaîne de caractères
+//for (i = 0; i < taille; i++) {
+//    tableau[i] = '\0';
+//}
+//}
 
+//{
+//char tableau[NOMBRE_CARACTERES]; // Déclaration de votre tableau de caractères
+//// Réinitialisation de chaque élément à '\0' pour vider une chaîne de caractères
+//for (int i = 0; i < NOMBRE_CARACTERES; i++) {
+//    tableau[i] = '\0';
+//}
+//}
 
 
 
@@ -97,3 +112,25 @@ void delay_ms(uint32_t milliseconds) {
 //		GLCD_DrawString(10, 24, "caca");
 //}
 //	
+
+
+//		do
+//		{
+//			Driver_USART1.Receive(test$,1); // tableau de 1 case
+//			while (Driver_USART1.GetRxCount() <1 ); // on attend que 1 case soit pleine
+//			//GLCD_DrawString(10,34,test);
+//	  }while(test$[0] != '$');
+//		
+//		Driver_USART1.Receive(testID,3); // tableau de 3 case
+//		while(Driver_USART1.GetRxCount() <3 ); // on attend que 3 case soit pleine
+//		
+//		if (checkIDtrame(testID)==0)
+//		{
+//			do
+//			{
+//			Driver_USART1.Receive(dataGPS+i,1); 
+//			while (Driver_USART1.GetRxCount() <1 ); // on attend que 1 case soit pleine
+//			i++;
+//			}while (dataGPS[i] != '*');
+//			traitementGPS(dataGPS);
+//		}
