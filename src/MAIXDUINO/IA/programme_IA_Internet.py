@@ -6,6 +6,7 @@ import KPU as kpu
 import socket , network
 from fpioa_manager import fm # fpioa_manager: abbreviated as fm
 from Maix import GPIO
+import time
 
 #fm.register(14, fm.fpioa.GPIO2) # Attribue la pin IO12 (Led RGB Verte) à la fonction logicielle GPIO0
 fm.register(12, fm.fpioa.GPIO0) # Attribue la pin IO12 à la fonction logicielle GPIO0
@@ -120,27 +121,27 @@ if __name__ == "__main__":
                 for i in Resultats :  # il peut y avoir plusieurs identifications
                     img.draw_rectangle(i.rect(),color=(0,255,0)) # Tracé de la boite englobante
                     if (i.classid()==0):
-                        objet = " panneau 130"
+                        objet = "panneau130."
                         led_bleue.value(0) # Led en cyan
                         led_verte.value(0)
                         img.draw_string(0, 0, " panneau 130 ", color=(0x00,0xFF,0xFF), scale=1)
                     if (i.classid()==1):
-                        objet = " panneau sens interdit"
+                        objet = "Sinter."
                         led_rouge.value(0) # Led en blanc
                         led_bleue.value(0)
                         led_verte.value(0)
                         img.draw_string(0, 0, " panneau sens interdit ", color=(0xFF,0xFF,0xFF), scale=1)
                     if (i.classid()==2):
-                        objet = "feu rouge"
+                        objet = "frouge."
                         led_rouge.value(0) # Led en rouge
                         img.draw_string(0, 0, " feu rouge ", color=(0xFF,0x00,0x00), scale=1)
                     if (i.classid()==3):
-                        objet = "panneau stop"
+                        objet = "stop."
                         led_rouge.value(0) # Led en jaune
                         led_verte.value(0)
                         img.draw_string(0, 0, " panneau stop ", color=(0xFF,0xFF,0x00), scale=1)
                     if (i.classid()==4):
-                        objet = "panneau 50"
+                        objet = "panneau50."
                         led_rouge.value(0) # Led en violet
                         led_bleue.value(0)
                         img.draw_string(0, 0, " panneau 50 ", color=(0xFF,0x00,0xFF), scale=1)
