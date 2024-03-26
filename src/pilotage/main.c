@@ -53,6 +53,12 @@ void pilotage(void const *argument);
 void motAvancer (void const *argument);
 void motReculer (void const *argument);
 
+
+typedef struct {
+	short vitesse;
+	unsigned short direction;
+} NunchukINFO;
+
 osThreadId ID_recepUSART1;
 osThreadId ID_pilotage;
 
@@ -62,13 +68,14 @@ osThreadDef(pilotage, osPriorityNormal,1,0);
 osMutexId ID_mut_GLCD; // Mutex pour accès LCD
 osMutexDef (mut_GLCD);
 
-int joyX, joyY;
+osMailQId ID_MailInfo1;
+osMailQDef (BAL, 16, NunchukINFO) ;
 
 int main(void){
 	osKernelInitialize() ;
 	
 	//Initialise_GPIO();
-	LPC_GPIO2->FIODIR0 |= (1 << 4);
+	LPC_GPIO2->FIODIR0 |= (1 << 3);
 	init_TIMER0();
 	init_TIMER1();
 	init_PWM();
@@ -81,6 +88,8 @@ int main(void){
 	ID_pilotage = osThreadCreate(osThread(pilotage) ,NULL);
 	
 	ID_mut_GLCD = osMutexCreate(osMutex(mut_GLCD)) ;
+	
+	ID_MailInfo1 = osMailCreate(osMailQ(BAL),NULL) ;
 	
 	osKernelStart ();
 	osDelay(osWaitForever);
@@ -108,14 +117,14 @@ void init_TIMER1(void) {
 void TIMER0_IRQHandler(void) {
 	LPC_TIM0->IR |= (1<<0);
 	//GPIO_PinWrite(2,4,1);
-	LPC_GPIO2->FIOPIN0 |= (1<<4);
+	LPC_GPIO2->FIOPIN0 |= (1<<3);
 	LPC_TIM1->TCR = 1;
 }
 
 void TIMER1_IRQHandler(void) {
 	LPC_TIM1->IR |= (1<<0);
 	//GPIO_PinWrite(2,4,1);
-	LPC_GPIO2->FIOPIN0 &= ~(1<<4);
+	LPC_GPIO2->FIOPIN0 &= ~(1<<3);
 	LPC_TIM1->TCR = 0;
 }
 
@@ -135,54 +144,66 @@ void init_USART1(void){
 
 void recepUSART1(void const *argument) {
 	
-	char Nunchuk[2];
-	char tab_joyX[20], tab_joyY[20], tab_joyXcalc[20], tab_joyYcalc[20], tab_joyXsat[20], tab_joyYsat[20];
+	NunchukINFO *ptrNunchukINFO;
+	
+	unsigned short joyX;
+	short joyY; 
+	unsigned char Nunchuk[2];
+	char tab_joyX[20], tab_joyY[20], tab_joyXcalc[20], tab_joyYcalc[20], tab_joyXsat[7], tab_joyYsat[6];
 	
 	while (1) {
 		Driver_USART1.Receive(Nunchuk,2);
 		while(Driver_USART1.GetStatus().rx_busy == 1);
-
+		
 		joyX = Nunchuk[0];
 		joyY = Nunchuk[1];
 		
-		sprintf(tab_joyX, "X : %03d  ", joyX);
-		sprintf(tab_joyY, "Y : %03d  ", joyY);
+//		sprintf(tab_joyY, "Y : %03d  ", joyY);
+		//sprintf(tab_joyX, "X : %03d  ", joyX);
+//		
+//		osMutexWait(ID_mut_GLCD, osWaitForever);
+
+
+		//GLCD_DrawString(0, 0, tab_joyX);
+//		GLCD_DrawString(0, 1*24, tab_joyY);
+//		osMutexRelease(ID_mut_GLCD);
 		
-		osMutexWait(ID_mut_GLCD, osWaitForever);
-		GLCD_DrawString(0, 0, tab_joyX);
-		GLCD_DrawString(0, 1*24, tab_joyY);
-		osMutexRelease(ID_mut_GLCD);
-		
-		joyX  = -98*joyX  + 49999;
-		//joyY = (joyY - 130) * 10.05;
+//		joyX  = -98*joyX  + 49999;
+		joyX = 25000 + (joyX / 255.0) * 20000;
 		joyY = joyY * 4;
 		
-		sprintf(tab_joyXcalc, "X ap CALC: %05d  ", joyX);
-		sprintf(tab_joyYcalc, "Y ap CALC: %04d  ", joyY);
+//		sprintf(tab_joyXcalc, "X ap CALC: %05d  ", joyX);
+//		sprintf(tab_joyYcalc, "Y ap CALC: %04d  ", joyY);
+//		
+//		osMutexWait(ID_mut_GLCD, osWaitForever);
+//		GLCD_DrawString(0, 2*24, tab_joyXcalc);
+//		GLCD_DrawString(0, 3*24, tab_joyYcalc);
+//		osMutexRelease(ID_mut_GLCD);
 		
-		osMutexWait(ID_mut_GLCD, osWaitForever);
-		GLCD_DrawString(0, 2*24, tab_joyXcalc);
-		GLCD_DrawString(0, 3*24, tab_joyYcalc);
-		osMutexRelease(ID_mut_GLCD);
 		
+		if (joyX >= 45000)              joyX = 45000;
+		if (joyX <= 25000)              joyX = 25000;
+		//if ((joyX<32000)&&(joyX>38000)) joyX = 35000;		
 		
-		if (joyX >= 49999)              joyX = 49999;
-		if (joyX <= 24999)              joyX = 24999;
-		if ((joyX<32000)&&(joyX>38000)) joyX = 37499;		
+		if (joyY >=  998)           joyY =  998;
+		if (joyY <= -998)           joyY = -998;
+		//if ((joyY<300)&&(joyY>-300)) joyY =     0;
 		
-		if (joyY >=  999)           joyY =  999;
-		if (joyY <= -999)           joyY = -999;
-		if ((joyY<300)&&(joyY>-300)) joyY =     0;
-		
-		sprintf(tab_joyXsat, "X ap SAT: %05d  ", joyX);
-		sprintf(tab_joyYsat, "Y ap SAT: %04d  ", joyY);
-		
-		osMutexWait(ID_mut_GLCD, osWaitForever);
+		sprintf(tab_joyXsat, "X:%05d", joyX);
+		sprintf(tab_joyYsat, "Y:%04d", joyY);
+//		
+//		osMutexWait(ID_mut_GLCD, osWaitForever);
 		GLCD_DrawString(0, 4*24, tab_joyXsat);
 		GLCD_DrawString(0, 5*24, tab_joyYsat);
-		osMutexRelease(ID_mut_GLCD);
+//		osMutexRelease(ID_mut_GLCD);
 		
-		osSignalSet(ID_pilotage, 0x01);
+		LPC_PWM1->MR3 = joyY;
+		LPC_TIM1->MR0 = joyX;
+
+		ptrNunchukINFO = osMailAlloc (ID_MailInfo1, osWaitForever);
+		ptrNunchukINFO->direction = joyX;
+		ptrNunchukINFO->vitesse   = joyY;
+		osMailPut(ID_MailInfo1, ptrNunchukINFO);
 		}
 }
 
@@ -211,34 +232,24 @@ void init_PWM(void) {
 
 void pilotage (void const *argument) {
 	
-	char etat_joyY = 0;
+	osEvent EVretour;
+	
+	NunchukINFO *recep;
+
+	unsigned short direction;
+	short vitesse; 
 	
 	while (1) {
 		
-		osSignalWait(0x01, osWaitForever);
+		EVretour = osMailGet(ID_MailInfo1, osWaitForever);
+		recep = EVretour.value.p;
 		
-		switch (etat_joyY) {
-			case 0:
-				if (joyY >  300) etat_joyY = 1;
-				if (joyY < -300) etat_joyY = 2;
-				else {
-					LPC_PWM1->MR3 = 0;
-					GPIO_PinWrite(0, 16, 0);
-					GPIO_PinWrite(0, 18, 0);
-				}
-				break;
-				
-			case 1:
-				LPC_PWM1->MR3 = joyY;
-				LPC_TIM1->MR0 = joyX;
-				etat_joyY = 0; 
-				break;
-			
-			case 2:
-				LPC_PWM1->MR3 = -joyY;
-				LPC_TIM1->MR0 =  joyX;
-				etat_joyY = 0; 
-				break;
-		}
+		vitesse = recep->vitesse ; 
+		direction = recep->direction ;
+		
+		osMailFree(ID_MailInfo1, recep);
+		
+		LPC_PWM1->MR3 = vitesse;
+		LPC_TIM1->MR0 = direction;
 	}
 }
