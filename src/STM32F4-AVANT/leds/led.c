@@ -1,8 +1,12 @@
 /**
+ * Système pilotage LED avec RTOS sur STMF4
+ * POL = 1 pour CLK à 1 en idle, PHA = 0 pour lecture sur front montant. de CLK
+ * 
   ******************************************************************************
   * @file    Templates/Src/main.c 
-  * @author  MCD Application Team
-  * @brief   STM32F4xx HAL API Template project 
+  * @author  MCD Application Team + XM
+  * @brief   Gestion de LED SPI type SK9822. Ex avec allumage 9 LED RGB
+  *          PA7 = MOSI, PA5 = CLK
   *
   * @note    modified by ARM
   *          The modifications allow to use this file as User Code Template
@@ -39,17 +43,23 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"                   // ARM::CMSIS:RTOS:Keil RTX
+
+#include "Driver_SPI.h"                 // ::CMSIS Driver:SPI
 #include "Board_LED.h"                  // ::Board Support:LED
+#include "stm32f4xx_hal.h"              // Keil::Device:STM32Cube HAL:Common
+
+
+extern ARM_DRIVER_SPI Driver_SPI1;
 
 #ifdef _RTE_
 #include "RTE_Components.h"             // Component selection
 #endif
 #ifdef RTE_CMSIS_RTOS2                  // when RTE component CMSIS RTOS2 is used
 #include "cmsis_os2.h"                  // ::CMSIS:RTOS2
-#include "stm32f4xx_hal_conf.h"         // Keil::Device:STM32Cube Framework:Classic
-#include "stm32f4xx_hal.h"              // Keil::Device:STM32Cube HAL:Common
-
 #endif
+
+
 
 #ifdef RTE_CMSIS_RTOS2_RTX5
 /**
@@ -90,12 +100,94 @@ uint32_t HAL_GetTick (void) {
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 
+
+void mySPI_Thread (void const *argument);                             // thread function
+//void FEUX (void const *argument);                             // thread function
+osThreadId tid_mySPI_Thread;                                          // thread id
+//osThreadId id_FEUX;                                          // thread id
+osThreadDef (mySPI_Thread, osPriorityNormal, 1, 0);                   // thread object
+//osThreadDef (FEUX, osPriorityNormal, 1, 0);                   // thread object
+
+void mySPI_callback(uint32_t event)
+{
+	switch (event) {
+		
+		
+		case ARM_SPI_EVENT_TRANSFER_COMPLETE  : 	 osSignalSet(tid_mySPI_Thread, 0x01);
+																							break;
+		
+		default : break;
+	}
+}
+
+char* Pilotage_LED(char nbLed, char lumi, char rouge, char vert, char bleu, char tab[]){ // Fonction Configuration LED
+	int i = 0,mod;
+	if (nbLed ==0)
+	{
+		for(i=0;i<247;i++){
+			mod =i%4;
+			if (i<4) {tab[i] = 0x00;}
+			else if (i>=244) {tab[i] = 0xFF;}
+			else
+				{
+					if (mod ==0) {tab[i] = lumi;}
+					else if (mod ==1) {tab[i] = bleu;}
+					else if (mod ==2) {tab[i] = vert;}
+					else if  (mod ==3) {tab[i] = rouge;}
+}}}
+	else 
+	{
+		mod = nbLed*4;
+		tab[mod] = lumi;
+		tab[mod+1] = bleu;
+		tab[mod+2] = vert;
+		tab[mod+3] = rouge;
+	}
+	return tab;
+}
+
+void sendTab(char tab[]) { //Fonction Allumage LED
+	Driver_SPI1.Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_ACTIVE);//Activer SPI
+	Driver_SPI1.Send(tab,248); //Envoi SPI
+	Driver_SPI1.Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);//Désactiver SPI
+}
+void Lum_init(void){ //Configuration registre ADC pour entrée AIN1 
+	int i = 0;
+	
+	RCC->APB2ENR |= (1<<8);
+	RCC->AHB1ENR |= (1<<0); //GPIOA
+
+	GPIOA->MODER |= (3<<2);  //PA1 en analog
+	
+	ADC1->SQR3 |= (1<<0);
+	ADC1->CR2 |= (1<<0);
+}
+
+void Init_SPI1(void){ //Init de SPI
+	Driver_SPI1.Initialize(NULL);		// Fonction callback à definir
+	Driver_SPI1.PowerControl(ARM_POWER_FULL);
+	Driver_SPI1.Control(ARM_SPI_MODE_MASTER | 
+											ARM_SPI_CPOL1_CPHA0 | 			// POL = 1 pour CLK à 1 en idle, PHA = 0 pour lecture sur front montant. de CLK
+											ARM_SPI_MSB_LSB | 
+											ARM_SPI_SS_MASTER_UNUSED |
+											ARM_SPI_DATA_BITS(8), 1000000);
+	Driver_SPI1.Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
+}
+
+short LectureADC(){ //Décalage de registre permettant la lecture de AIN1
+	short valeur;
+	ADC1->CR2 |= (1<<30);
+	while((ADC1->SR & (1<<1))==0);
+	valeur = ADC1->DR;
+	return valeur;
+}
 /* Private functions ---------------------------------------------------------*/
 /**
   * @brief  Main program
   * @param  None
   * @retval None
   */
+
 
 int main(void)
 {
@@ -110,32 +202,17 @@ int main(void)
        - Low Level Initialization
      */
   HAL_Init();
-
+	Init_SPI1();
+	Lum_init();
   /* Configure the system clock to 168 MHz */
   SystemClock_Config();
   SystemCoreClockUpdate();
-
-  /* Add your application code here
-     */
-	LED_Initialize();
-#ifdef RTE_CMSIS_RTOS2	// A commenter si utilisation RTOS
   /* Initialize CMSIS-RTOS2 */
-  osKernelInitialize ();
-
-  /* Create thread functions that start executing, 
-  Example: osThreadNew(app_main, NULL, NULL); */
-
-  /* Start thread execution */
+  osKernelInitialize ();	
+	tid_mySPI_Thread = osThreadCreate ( osThread ( mySPI_Thread ), NULL ) ;//Création thread
   osKernelStart();
-#endif
-
-  /* Infinite loop */
-  while (1)
-  {
-		LED_On (1);
-		LED_On (2);
-		LED_On (3);
-  }
+	osDelay(osWaitForever);
+	
 }
 
 /**
@@ -148,7 +225,7 @@ int main(void)
   *            APB1 Prescaler                 = 4
   *            APB2 Prescaler                 = 2
   *            HSE Frequency(Hz)              = 8000000
-  *            PLL_M                          = 8
+  *            PLL_M                          = 25
   *            PLL_N                          = 336
   *            PLL_P                          = 2
   *            PLL_Q                          = 7
@@ -158,6 +235,21 @@ int main(void)
   * @param  None
   * @retval None
   */
+
+	
+void mySPI_Thread (void const *argument) { //Thread Allumage
+	//osEvent evt;	
+	// Fabriquer tableau 
+		char valeur[248];
+		while (1) {
+				if (LectureADC() > 2000) { // luminosité extérieur forte
+				sendTab(Pilotage_LED(0,0xE0,0x1F,0x51,0xFF,valeur));}	//Eclairage faible octet : E0
+				else{	//	luminosité extérieur faible
+				sendTab(Pilotage_LED(0,0xFF,0x1F,0x51,0xFF,valeur));  //Eclairage fort octet : E0
+				}	
+  }
+}
+
 static void SystemClock_Config(void)
 {
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
