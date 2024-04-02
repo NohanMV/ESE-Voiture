@@ -37,6 +37,8 @@
 #define ID_TEXT_2 (GUI_ID_USER + 0x04)
 #define ID_TEXT_3 (GUI_ID_USER + 0x05)
 #define ID_TEXT_4 (GUI_ID_USER + 0x06)
+#define ID_TEXT_5 (GUI_ID_USER + 0x07)
+#define ID_TEXT_6 (GUI_ID_USER + 0x08)
 
 
 // USER START (Optionally insert additional defines)
@@ -71,6 +73,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { TEXT_CreateIndirect, "Valeur", ID_TEXT_2, 26, 175, 80, 20, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "rfid", ID_TEXT_3, 30, 60, 80, 20, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "valeur_rfid", ID_TEXT_4, 80, 60, 80, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "IA", ID_TEXT_5, 30, 80, 80, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "vision IA", ID_TEXT_6, 80, 80, 80, 20, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -123,6 +127,16 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     //
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_4);
     TEXT_SetFont(hItem, GUI_FONT_16_1);
+    //
+    // Initialization of 'IA'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);
+    TEXT_SetFont(hItem, GUI_FONT_16B_1);
+    //
+    // Initialization of 'vision IA'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_6);
+    TEXT_SetFont(hItem, GUI_FONT_16_1);
     // USER START (Optionally insert additional code for further widget initialization)
     // USER END
     break;
@@ -155,11 +169,21 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     WM_DefaultProc(pMsg);
     break;
   }
-	if (identifiant==0x404)
+		if (identifiant==0x404)
 	{
 		if(retour==0xff) sprintf(tab,"ouverture") ;
 		else sprintf(tab,"alarme");
 		hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_4 ); //direction 
+		TEXT_SetText(hItem, tab );
+	}
+		else if (identifiant ==0x169)
+	{
+		if (retour==0x0f) sprintf(tab,"Panneau 130") ;
+		else if (retour==0x0e) sprintf(tab,"Panneau 50") ;
+		else if (retour==0x10) sprintf(tab,"Panneau interdiction") ;
+		else if (retour==0x07) sprintf(tab,"Feu rouge") ;
+		else if (retour==0x11) sprintf(tab,"Panneau STOP") ;
+		hItem = WM_GetDialogItem(pMsg->hWin,ID_TEXT_6 ); //direction 
 		TEXT_SetText(hItem, tab );
 	}
 	else
@@ -175,6 +199,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	
 	
 }
+
 
 /*********************************************************************
 *
