@@ -794,7 +794,7 @@
 
 //     <o> SSP0_MISO <0=>Not used <1=>P0_17 <2=>P1_23
 //     <i> Master In Slave Out for SSP0
-#define   RTE_SSP0_MISO_PIN_SEL         1
+#define   RTE_SSP0_MISO_PIN_SEL         0
 #if      (RTE_SSP0_MISO_PIN_SEL == 0)
   #define RTE_SSP0_MISO_PIN_EN          0
 #elif    (RTE_SSP0_MISO_PIN_SEL == 1)
@@ -814,7 +814,7 @@
 
 //     <o> SSP0_MOSI <0=>Not used <1=>P0_18 <2=>P1_24
 //     <i> Master Out Slave In for SSP0
-#define   RTE_SSP0_MOSI_PIN_SEL         1
+#define   RTE_SSP0_MOSI_PIN_SEL         0
 #if      (RTE_SSP0_MOSI_PIN_SEL == 0)
   #define RTE_SSP0_MOSI_PIN_EN          0
 #elif    (RTE_SSP0_MOSI_PIN_SEL == 1)
@@ -938,7 +938,7 @@
 //   <h> Pin Configuration
 //     <o> SPI_SSEL <0=>Not used <1=>P0_16
 //     <i> Slave Select for SPI
-#define   RTE_SPI_SSEL_PIN_SEL          1
+#define   RTE_SPI_SSEL_PIN_SEL          0
 #if      (RTE_SPI_SSEL_PIN_SEL == 0)
 #define   RTE_SPI_SSEL_PIN_EN           0
 #elif    (RTE_SPI_SSEL_PIN_SEL == 1)
@@ -963,7 +963,7 @@
 #endif
 //     <o> SPI_MISO <0=>Not used <1=>P0_17
 //     <i> Master In Slave Out for SPI
-#define   RTE_SPI_MISO_PIN_SEL          1
+#define   RTE_SPI_MISO_PIN_SEL          0
 #if      (RTE_SPI_MISO_PIN_SEL == 0)
   #define RTE_SPI_MISO_PIN_EN           0
 #elif    (RTE_SPI_MISO_PIN_SEL == 1)
@@ -979,7 +979,7 @@
 
 //     <o> SPI_MOSI <0=>Not used <1=>P0_18
 //     <i> Master Out Slave In for SPI
-#define   RTE_SPI_MOSI_PIN_SEL          1
+#define   RTE_SPI_MOSI_PIN_SEL          0
 #if      (RTE_SPI_MOSI_PIN_SEL == 0)
   #define RTE_SPI_MOSI_PIN_EN           0
 #elif    (RTE_SPI_MOSI_PIN_SEL == 1)

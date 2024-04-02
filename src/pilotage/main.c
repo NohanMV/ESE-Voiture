@@ -1,12 +1,12 @@
-#include "Board_GLCD.h"                 // ::Board Support:Graphic LCD
 #include "Driver_USART.h"  
-#include "GLCD_Config.h"                // Keil.MCB1700::Board Support:Graphic LCD
 #include "LPC17xx.h"                    // Device header
-#include "GPIO.h"
+#include "RTE_Components.h"             // Component selection
+#include "RTE_Device.h"                 // Keil::Device:Startup
 #include "GPIO_LPC17xx.h"               // Keil::Device:GPIO
-#include <stdio.h>
-#include <stdlib.h>
 #include "cmsis_os.h"                   // ARM::CMSIS:RTOS:Keil RTX
+#include "GLCD_Config.h"                // Keil.MCB1700::Board Support:Graphic LCD
+#include "Board_GLCD.h"                 // ::Board Support:Graphic LCD
+#include <stdio.h>
 
 #define SBIT_TIMER0  1
 #define SBIT_TIMER1  2
@@ -22,77 +22,44 @@
 #define SBIT_CNTEN     0 
 #define SBIT_PWMEN     2
 
-#define SBIT_PWMMR0R   1
-
-#define SBIT_LEN3      3
-#define SBIT_LEN6      6
-
-#define SBIT_PWMENA3   11
-#define SBIT_PWMENA6   14
-
-#define PWM_3          4
-#define PWM_6          10
-
 extern ARM_DRIVER_USART Driver_USART1;
 
-extern GLCD_FONT GLCD_Font_6x8;
 extern GLCD_FONT GLCD_Font_16x24;
 
+void init_USART1(void);
 
 void init_TIMER0(void);
 void init_TIMER1(void);
 void TIMER0_IRQHandler(void);
 void TIMER1_IRQHandler(void);
 
-void init_USART1(void);
-void recepUSART1 (void const *argument);
-
-void init_PWM(void);
 void pilotage(void const *argument);
 
-void motAvancer (void const *argument);
-void motReculer (void const *argument);
-
-
-typedef struct {
-	short vitesse;
-	unsigned short direction;
-} NunchukINFO;
-
-osThreadId ID_recepUSART1;
 osThreadId ID_pilotage;
-
-osThreadDef(recepUSART1, osPriorityNormal,1,0);
 osThreadDef(pilotage, osPriorityNormal,1,0);
-
 osMutexId ID_mut_GLCD; // Mutex pour accès LCD
 osMutexDef (mut_GLCD);
-
-osMailQId ID_MailInfo1;
-osMailQDef (BAL, 16, NunchukINFO) ;
 
 int main(void){
 	osKernelInitialize() ;
 	
 	//Initialise_GPIO();
-	LPC_GPIO2->FIODIR0 |= (1 << 3);
+	//LPC_GPIO2->FIODIR0 |= (1 << 4);
+	LPC_GPIO2->FIODIR0 |= (1 << 4);
 	init_TIMER0();
 	init_TIMER1();
-	init_PWM();
 	init_USART1();
 	GLCD_Initialize();
 	GLCD_ClearScreen();
 	GLCD_SetFont(&GLCD_Font_16x24);
 	
-	ID_recepUSART1 = osThreadCreate(osThread(recepUSART1),NULL);
 	ID_pilotage = osThreadCreate(osThread(pilotage) ,NULL);
-	
 	ID_mut_GLCD = osMutexCreate(osMutex(mut_GLCD)) ;
-	
-	ID_MailInfo1 = osMailCreate(osMailQ(BAL),NULL) ;
+
 	
 	osKernelStart ();
 	osDelay(osWaitForever);
+	return 0;
 }
 
 void init_TIMER0(void) {
@@ -116,18 +83,16 @@ void init_TIMER1(void) {
 
 void TIMER0_IRQHandler(void) {
 	LPC_TIM0->IR |= (1<<0);
-	//GPIO_PinWrite(2,4,1);
-	LPC_GPIO2->FIOPIN0 |= (1<<3);
+	LPC_GPIO2->FIOPIN0 |=(1<<4);
 	LPC_TIM1->TCR = 1;
 }
 
 void TIMER1_IRQHandler(void) {
+	
 	LPC_TIM1->IR |= (1<<0);
-	//GPIO_PinWrite(2,4,1);
-	LPC_GPIO2->FIOPIN0 &= ~(1<<3);
+	LPC_GPIO2->FIOPIN0 &= ~(1<<4);
 	LPC_TIM1->TCR = 0;
 }
-
 
 void init_USART1(void){
 	Driver_USART1.Initialize(NULL);
@@ -142,13 +107,12 @@ void init_USART1(void){
 	Driver_USART1.Control(ARM_USART_CONTROL_RX,1);
 }
 
-void recepUSART1(void const *argument) {
-	
-	NunchukINFO *ptrNunchukINFO;
-	
+void pilotage(void const *argument){
 	unsigned short joyX;
-	short joyY; 
-	unsigned char Nunchuk[2];
+	int moyX;
+	int i;
+	unsigned char Nunchuk[2]={127,127}, oldNunchuk[2]={127,127};
+
 	char tab_joyX[20], tab_joyY[20], tab_joyXcalc[20], tab_joyYcalc[20], tab_joyXsat[7], tab_joyYsat[6];
 	
 	while (1) {
@@ -156,100 +120,47 @@ void recepUSART1(void const *argument) {
 		while(Driver_USART1.GetStatus().rx_busy == 1);
 		
 		joyX = Nunchuk[0];
-		joyY = Nunchuk[1];
+//		if (oldNunchuk[0] != Nunchuk[0]) {
+//			oldNunchuk[0] = Nunchuk[0];
+			
+//			for(i=0; i<15; i++){
+				
+//				moyX += Nunchuk[0];
+//			}
+//			joyX = (float)moyX/15;
+//			
+//		  sprintf(tab_joyX, "X : %03d  ", Nunchuk[0]);
+//		  osMutexWait(ID_mut_GLCD, osWaitForever);
+//			GLCD_DrawString(0, 0, tab_joyX);
+//			GLCD_DrawString(0, 1*24, tab_joyY);
+//			osMutexRelease(ID_mut_GLCD);
+			
+//			sprintf(tab_joyXcalc, "X ap CALC: %05d  ", joyX);
+//			osMutexWait(ID_mut_GLCD, osWaitForever);
+//		  GLCD_DrawString(0, 2*24, tab_joyXcalc);
+//		  GLCD_DrawString(0, 3*24, tab_joyYcalc);
+//		  osMutexRelease(ID_mut_GLCD);
+			
+			
+			joyX = 25000 + (joyX / 255.0) * 20000;
 		
-//		sprintf(tab_joyY, "Y : %03d  ", joyY);
-		//sprintf(tab_joyX, "X : %03d  ", joyX);
-//		
-//		osMutexWait(ID_mut_GLCD, osWaitForever);
+			if (joyX >= 45000)              joyX = 45000;
+			if (joyX <= 25000)              joyX = 25000;
+			if ((joyX>32000)&&(joyX<38000)) joyX = 35000;
 
+		  //sprintf(tab_joyYsat, "Y:%04d", joyY);
+			sprintf(tab_joyXsat, "X:%05d", joyX);
+		  osMutexWait(ID_mut_GLCD, osWaitForever);
+		  GLCD_DrawString(0, 4*24, tab_joyXsat);
+//		  GLCD_DrawString(0, 5*24, tab_joyYsat);
+//		  osMutexRelease(ID_mut_GLCD);
 
-		//GLCD_DrawString(0, 0, tab_joyX);
-//		GLCD_DrawString(0, 1*24, tab_joyY);
-//		osMutexRelease(ID_mut_GLCD);
-		
-//		joyX  = -98*joyX  + 49999;
-		joyX = 25000 + (joyX / 255.0) * 20000;
-		joyY = joyY * 4;
-		
-//		sprintf(tab_joyXcalc, "X ap CALC: %05d  ", joyX);
-//		sprintf(tab_joyYcalc, "Y ap CALC: %04d  ", joyY);
-//		
-//		osMutexWait(ID_mut_GLCD, osWaitForever);
-//		GLCD_DrawString(0, 2*24, tab_joyXcalc);
-//		GLCD_DrawString(0, 3*24, tab_joyYcalc);
-//		osMutexRelease(ID_mut_GLCD);
-		
-		
-		if (joyX >= 45000)              joyX = 45000;
-		if (joyX <= 25000)              joyX = 25000;
-		//if ((joyX<32000)&&(joyX>38000)) joyX = 35000;		
-		
-		if (joyY >=  998)           joyY =  998;
-		if (joyY <= -998)           joyY = -998;
-		//if ((joyY<300)&&(joyY>-300)) joyY =     0;
-		
-		sprintf(tab_joyXsat, "X:%05d", joyX);
-		sprintf(tab_joyYsat, "Y:%04d", joyY);
-//		
-//		osMutexWait(ID_mut_GLCD, osWaitForever);
-		GLCD_DrawString(0, 4*24, tab_joyXsat);
-		GLCD_DrawString(0, 5*24, tab_joyYsat);
-//		osMutexRelease(ID_mut_GLCD);
-		
-		LPC_PWM1->MR3 = joyY;
-		LPC_TIM1->MR0 = joyX;
-
-		ptrNunchukINFO = osMailAlloc (ID_MailInfo1, osWaitForever);
-		ptrNunchukINFO->direction = joyX;
-		ptrNunchukINFO->vitesse   = joyY;
-		osMailPut(ID_MailInfo1, ptrNunchukINFO);
+			LPC_TIM1->MR0 = joyX;
+			//LPC_TIM1->MR0 = 35000;
+			
+			moyX=0;
 		}
-}
-
-void init_PWM(void) {
-
-    // Activer l'alimentation du périphérique PWM
-    LPC_PINCON->PINSEL4 = (1<<PWM_3) | (1<<PWM_6); 
-
-    // Configurer le mode PWM pour le canal 1 sur le pin P2.5
-   // Sélectionner le mode PWM1.2 pour le pin P2.5
-
-    // Configurer le module PWM
-     // Mettre à zéro le compteur et le préchargeur
-    LPC_PWM1->PR = 0;          // Pas de pré-échelle pour le compteur
-    LPC_PWM1->MR0 = 999;       
-		LPC_PWM1->MR3 = 998; 
-    LPC_PWM1->MR6 = 599;       
-    LPC_PWM1->MCR = (1<<SBIT_PWMMR0R);  // Réinitialiser le compteur lorsqu'il atteint la valeur MR0
-    LPC_PWM1->LER = (1<<SBIT_LEN3) | (1<<SBIT_LEN6);  // Activer le chargement des registres de correspondance MR0 et MR2 lors du prochain cycle
+		//LPC_TIM1->MR0 = 35000;
+		LPC_TIM1->TC = 0;
 		
-		LPC_PWM1->PCR = (1<<SBIT_PWMENA3) | (1<<SBIT_PWMENA6);
-    // Activer le compteur PWM et la sortie PWM
-    LPC_PWM1->TCR = (1<<SBIT_CNTEN) | (1<<SBIT_PWMEN);
-}
-
-
-void pilotage (void const *argument) {
-	
-	osEvent EVretour;
-	
-	NunchukINFO *recep;
-
-	unsigned short direction;
-	short vitesse; 
-	
-	while (1) {
-		
-		EVretour = osMailGet(ID_MailInfo1, osWaitForever);
-		recep = EVretour.value.p;
-		
-		vitesse = recep->vitesse ; 
-		direction = recep->direction ;
-		
-		osMailFree(ID_MailInfo1, recep);
-		
-		LPC_PWM1->MR3 = vitesse;
-		LPC_TIM1->MR0 = direction;
 	}
-}
