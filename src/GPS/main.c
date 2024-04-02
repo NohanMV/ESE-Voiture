@@ -53,10 +53,8 @@ void traitementGPS(unsigned char *dataGPS){
 		// Utilisation de sscanf pour extraire les entiers du tableau de caractères
 		//             $GPGGA,123519,4807.038,N,01131.324,E,1,08,0.9,545.4,M,46.9,M, , *42
 		sscanf(dataGPS,"GP%s %s %lf %c %lf %c %s", trameID,inutile,&longitude,&dirLong,&latitude,&dirLat,inutile);
-		for (i = 0; i < 100; i++) {
-				dataGPS[i] = 0;
-				}
-		sprintf(Tab_longitude,".3%lf",longitude);
+	
+		sprintf(Tab_longitude,"%lf",longitude);
 		sprintf(Tab_latitude,"%lf",latitude);
 		sprintf(Tab_dirLong,"%c",dirLong);
 		sprintf(Tab_dirLat,"%c",dirLat);
@@ -112,21 +110,32 @@ int main(void)
 		{
 			Driver_USART1.Receive(test,1); // tableau de 1 case
 			while (Driver_USART1.GetRxCount() <1 ); // on attend que 1 case soit pleine
-			//GLCD_DrawString(10,34,test);
+//			GLCD_DrawString(10,34,test);
 			
 	  }while(test[0] != '$');
 		//GLCD_DrawString(10,34,"ok");
-        
-		do
-		{			
-				Driver_USART1.Receive(test2 ,1); 
-				while (Driver_USART1.GetRxCount() <1 ); // on attend que 100 case soit pleine
-				dataGPS[i]=test2[0];
-				i++;
+		for (i=0; dataGPS[i] != '*';i++){
+			Driver_USART1.Receive(dataGPS+i ,1); 
+			while (Driver_USART1.GetRxCount() <1 );// on attend que 100 case soit pleine
+			GLCD_DrawString(10,34,dataGPS);
+			GLCD_DrawString(10,34,"ok");
 			
-		}while(test2[0]!= '*');
-//			GLCD_DrawString(10,100,"aaa");
-				traitementGPS(dataGPS);
+		}
+		GLCD_DrawString(10,54,"ok1");
+		traitementGPS(dataGPS);
+		
+		for (i = 0; i < 100; i++) {
+				dataGPS[i] = 0;
+			}
+//			dataGPS[i]=test2[0];        
+//		do
+//		{			
+//				
+//				i++;
+//			
+//		}while(test2[0]!= '*');
+////			GLCD_DrawString(10,100,"aaa");
+//				traitementGPS(dataGPS);
 		
 	}	
 	

@@ -21,39 +21,13 @@ Target DLL:      UL2CM3.DLL V1.156.1.0
 Dialog DLL:      TARMP1.DLL V1.24.0.0
  
 <h2>Project:</h2>
-U:\S4\GPSservice\GPS\I2C.uvprojx
-Project File Date:  03/22/2024
+U:\ESE-VOITURE\ESE-Voiture-STM32F4-AVANT\ESE-Voiture-STM32F4-AVANT\src\GPS\I2C.uvprojx
+Project File Date:  04/02/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
-Rebuild target 'Target 1'
-compiling GLCD_Fonts.c...
-compiling fonctionGPS.c...
-fonctionGPS.c(136): warning:  #1-D: last line of file ends without a newline
-  //		}
-fonctionGPS.c: 1 warning, 0 errors
-compiling main.c...
-fonctionGPS.h(3): warning:  #1-D: last line of file ends without a newline
-  void delay(int tempo);
-main.c(55): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
-  		sscanf(dataGPS,"GP%s %s %lf %c %lf %c %s", trameID,inutile,&longitude,&dirLong,&latitude,&dirLat,inutile);
-main.c(36): warning:  #177-D: variable "coordonees" was declared but never referenced
-  	  char coordonees[50]; // stocke les données de la trame utile
-main.c(133): warning:  #1-D: last line of file ends without a newline
-  }
-main.c: 4 warnings, 0 errors
-compiling GLCD_MCB1700.c...
-compiling RTX_Conf_CM.c...
-compiling SSP_LPC17xx.c...
-compiling GPDMA_LPC17xx.c...
-compiling GPIO_LPC17xx.c...
-compiling UART_LPC17xx.c...
-assembling startup_LPC17xx.s...
-compiling PIN_LPC17xx.c...
-compiling system_LPC17xx.c...
-linking...
-Program Size: Code=30460 RO-data=7688 RW-data=112 ZI-data=3976  
-".\Objects\I2C.axf" - 0 Error(s), 5 Warning(s).
+Build target 'Target 1'
+".\Objects\I2C.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -74,12 +48,12 @@ Package Vendor: Keil
                 Keil.MCB1700::Board Support:Graphic LCD:1.0.0
                 NXP LPC1700 Series Device Support, Drivers and Examples for MCB1700 and LPC1788-32
    * Component: Graphic LCD Version: 1.0.0
-   * Component: GPDMA Version: 1.2.0
-   * Component: Startup Version: 1.0.0
-   * Component: PIN Version: 1.0.0
-   * Component: SSP Version: 2.7.0
    * Component: USART Version: 2.6.0
    * Component: GPIO Version: 1.1.0
+   * Component: Startup Version: 1.0.0
+   * Component: PIN Version: 1.0.0
+   * Component: GPDMA Version: 1.2.0
+   * Component: SSP Version: 2.7.0
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.MDK-Middleware.7.0.0.pack
@@ -88,8 +62,8 @@ Package Vendor: Keil
    * Component: Graphic LCD Version: 1.00
 
 <h2>Collection of Component include folders:</h2>
-  U:\S4\GPSservice\GPS\RTE
-  U:\S4\GPSservice\GPS\RTE\Device\LPC1768
+  U:\ESE-VOITURE\ESE-Voiture-STM32F4-AVANT\ESE-Voiture-STM32F4-AVANT\src\GPS\RTE
+  U:\ESE-VOITURE\ESE-Voiture-STM32F4-AVANT\ESE-Voiture-STM32F4-AVANT\src\GPS\RTE\Device\LPC1768
   C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include
   C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include
   C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\RTOS\RTX\INC
@@ -114,44 +88,27 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.3.0
 
    * Component: ARM::CMSIS:RTOS:Keil RTX:4.82.0
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
-      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MemPool.c
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Thread.c
-      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
+      Include file:  CMSIS\RTOS\RTX\INC\cmsis_os.h
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Timer.c
+      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MsgQueue.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Semaphore.c
+      Source file:   CMSIS\RTOS\RTX\SRC\ARM\SVC_Table.s
       Source file:   CMSIS\RTOS\RTX\Templates\RTX_Conf_CM.c
+      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\Mutex.c
       Include file:  CMSIS\RTOS\RTX\UserCodeTemplates\osObjects.h
       Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\main.c
-      Source file:   CMSIS\RTOS\RTX\UserCodeTemplates\MailQueue.c
-      Library file:  CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib
 
    * Component: ARM::CMSIS Driver:WiFi:Custom:1.0.0
       Include file:  CMSIS\Driver\Include\Driver_WiFi.h
 
    * Component: Keil.MCB1700::Board Support:Graphic LCD:1.0.0
+      Include file:  Boards\Keil\MCB1700\Common\GLCD_Config.h
       Source file:   Boards\Keil\MCB1700\Common\GLCD_Fonts.c
       Source file:   Boards\Keil\MCB1700\Common\GLCD_MCB1700.c
-      Include file:  Boards\Keil\MCB1700\Common\GLCD_Config.h
-
-   * Component: Keil::Device:GPDMA:1.2.0
-      Include file:  RTE_Driver\GPDMA_LPC17xx.h
-      Source file:   RTE_Driver\GPDMA_LPC17xx.c
-
-   * Component: Keil::Device:Startup:1.0.0
-      Include file:  RTE_Driver\Config\RTE_Device.h
-      Source file:   Device\Source\system_LPC17xx.c
-      Source file:   Device\Source\ARM\startup_LPC17xx.s
-      Include file:  Device\Include\LPC17xx.h
-
-   * Component: Keil::Device:PIN:1.0.0
-      Include file:  RTE_Driver\PIN_LPC17xx.h
-      Source file:   RTE_Driver\PIN_LPC17xx.c
-
-   * Component: Keil::CMSIS Driver:SPI:SSP:2.7.0
-      Source file:   RTE_Driver\SSP_LPC17xx.c
 
    * Component: Keil::CMSIS Driver:USART:2.6.0
       Source file:   RTE_Driver\UART_LPC17xx.c
@@ -160,9 +117,26 @@ Package Vendor: Keil
       Include file:  RTE_Driver\GPIO_LPC17xx.h
       Source file:   RTE_Driver\GPIO_LPC17xx.c
 
+   * Component: Keil::Device:Startup:1.0.0
+      Source file:   Device\Source\ARM\startup_LPC17xx.s
+      Source file:   Device\Source\system_LPC17xx.c
+      Include file:  RTE_Driver\Config\RTE_Device.h
+      Include file:  Device\Include\LPC17xx.h
+
+   * Component: Keil::Device:PIN:1.0.0
+      Include file:  RTE_Driver\PIN_LPC17xx.h
+      Source file:   RTE_Driver\PIN_LPC17xx.c
+
+   * Component: Keil::Device:GPDMA:1.2.0
+      Include file:  RTE_Driver\GPDMA_LPC17xx.h
+      Source file:   RTE_Driver\GPDMA_LPC17xx.c
+
+   * Component: Keil::CMSIS Driver:SPI:SSP:2.7.0
+      Source file:   RTE_Driver\SSP_LPC17xx.c
+
    * Component: ::Board Support:Graphic LCD:1.00 (API)
       Include file:  Board\Board_GLCD.h
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
