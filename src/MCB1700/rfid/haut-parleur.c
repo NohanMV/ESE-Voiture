@@ -25,7 +25,7 @@ void Init_UART_HAUT_PARLEURS(void){ // init de l'uart 1 pour les hauts-parleurs
 							ARM_USART_FLOW_CONTROL_NONE,
 							9600);
 	Driver_USART2.Control(ARM_USART_CONTROL_TX,1);
-
+	Driver_USART2.Control(ARM_USART_CONTROL_RX,1);
 }
 
 

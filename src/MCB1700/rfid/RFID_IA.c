@@ -38,7 +38,7 @@ void InitCan1 (void) {
 
 void CB_USART(uint32_t event)
 {
-	if (event & ARM_USART_EVENT_RECEIVE_COMPLETE)  // si fin d’émission...
+	if (event & ARM_USART_EVENT_RECEIVE_COMPLETE)  // si fin dâ€™Ã©mission...
 	{
 		osSignalSet(id_RFIDthread,0x04); 
 	}
@@ -60,7 +60,7 @@ void Init_UART(void)
 
 void CB_USART2(uint32_t event)
 {
-	if (event & ARM_USART_EVENT_RECEIVE_COMPLETE)  // si fin d’émission...
+	if (event & ARM_USART_EVENT_RECEIVE_COMPLETE)  // si fin dâ€™Ã©mission...
 	{
 		osSignalSet(id_IAthread,0x04); 
 	}
@@ -88,7 +88,7 @@ int compare_tableaux(unsigned char *tab1, unsigned char *tab2, unsigned int tail
 		{
        if (tab1[i]!=tab2[i]) 
 				{
-            return 0; // Les tableaux sont différents, retourne 0
+            return 0; // Les tableaux sont diffÃ©rents, retourne 0
 				}
 											// Les tableaux sont identiques, retourne 1
 		}
@@ -139,10 +139,10 @@ void CANthreadT(void const *argument)
 			tx_msg_info.id = ARM_CAN_STANDARD_ID(0x404);
 			tx_msg_info.rtr = 0; // 0 = trame DATA
 			
-			if(resultat == 0) data_buf[0] = 0xFF; // data à envoyer à placer dans un tableau de char
+			if(resultat == 0) data_buf[0] = 0xFF; // data Ã  envoyer Ã  placer dans un tableau de char
 			else data_buf[0] = 0x00;
 			 
-			Driver_CAN1.MessageSend(1, &tx_msg_info, data_buf, 8); // 1 data à envoyer
+			Driver_CAN1.MessageSend(1, &tx_msg_info, data_buf, 8); // 1 data Ã  envoyer
 		}		
 }
 
@@ -171,13 +171,13 @@ void CANthreadT_IA(void const *argument)
 			tx_msg_info.id = ARM_CAN_STANDARD_ID(0x169);
 			tx_msg_info.rtr = 0; // 0 = trame DATA
 			
-			if(tab[0] == 0x0e) data_buf[0] = 0x0e; // data à envoyer à placer dans un tableau de char
+			if(tab[0] == 0x0e) data_buf[0] = 0x0e; // data Ã  envoyer Ã  placer dans un tableau de char
 			if(tab[0] == 0x0f) data_buf[0] = 0x0f;
 			if(tab[0] == 0x10) data_buf[0] = 0x10;
 			if(tab[0] == 0x07) data_buf[0] = 0x07;
 			if(tab[0] == 0x11) data_buf[0] = 0x11;
 			 
-			Driver_CAN1.MessageSend(1, &tx_msg_info, data_buf, 8); // 1 data à envoyer
+			Driver_CAN1.MessageSend(1, &tx_msg_info, data_buf, 8); // 1 data Ã  envoyer
 		}		
 }
 
