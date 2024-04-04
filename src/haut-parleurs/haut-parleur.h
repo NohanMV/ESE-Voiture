@@ -15,7 +15,7 @@
 #define PANNEAU_130					 	0x0F // Durée 1sec
 #define PANNEAU_INTERDICTION	0x10 // Durée 2sec
 #define PANNEAU_STOP					0x11 // Durée 4sec
-
+#define FEU_ROUGE             0x12 // Durée 2sec
 #define LECTURE		 0x0F
 
 void datasend(char CMD,char DATA); 	// fonction qui créer le buffer de donnée a envoyer 
