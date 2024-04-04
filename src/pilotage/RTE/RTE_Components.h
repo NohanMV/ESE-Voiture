@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'debogage-direction' 
+ * Project: 'pilotage' 
  * Target:  'Target 1' 
  */
 

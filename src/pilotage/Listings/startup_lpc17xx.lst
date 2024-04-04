@@ -432,7 +432,7 @@ ARM Macro Assembler    Page 7
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend=.\objects\startup_lpc17xx.d -o.\objects\startup_lpc17xx.o -IU:\Pro
-jet\debogage\RTE -IU:\Projet\debogage\RTE\Device\LPC1768 -IC:\Keil_v5\ARM\PACK\
+jet\pilotage\RTE -IU:\Projet\pilotage\RTE\Device\LPC1768 -IC:\Keil_v5\ARM\PACK\
 ARM\CMSIS\5.6.0\CMSIS\Core\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\
 Driver\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\RTOS\RTX\INC -IC:\Ke
 il_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Boards\Keil\MCB1700\Common -IC:\Keil_v5\A
