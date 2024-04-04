@@ -162,13 +162,13 @@ int main (void) {
 	
 	// Initialisation des 2 périphériques CAN
 	InitCan1();
-	InitCan2();
-	LPC_GPIO0->FIODIR2&=0x01;
+	//InitCan2();
+	//LPC_GPIO0->FIODIR2&=0x01;
 
   // create 'thread' functions that start executing,
   // example: tid_name = osThreadCreate (osThread(name), NULL);
 	id_CANthreadR = osThreadCreate (osThread(CANthreadR), NULL);
-	id_CANthreadT = osThreadCreate (osThread(CANthreadT), NULL);
+	//id_CANthreadT = osThreadCreate (osThread(CANthreadT), NULL);
 
   osKernelStart ();                         // start thread execution 
 	osDelay(osWaitForever);
