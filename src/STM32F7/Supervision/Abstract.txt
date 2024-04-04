@@ -1,0 +1,12 @@
+Exemple d'utilisation du GUI Builder - STM32F746G-Discovery Kit.
+XM 2019
+
+Attention, avant de commencer :
+- installer les drivers USB STM disponibles sur Commun\IT2R
+- mettre dans GUIBuilder.ini le chemin du projet.
+
+Pour créer une interface :
+- créer l'interface (max 480*272 px) à l'aide de GUI Builder et la sauvegarder en fichier .c (ici WindowDLG.c)
+- intégrer le fichier .c dans le projet
+- modifier ce fichier pour gérer les actions en fonction des choix de l'utilisateur
+Les fonctions utilisables avec les Widgets sont disponibles dans le répertoire Keil/ARM/Segger/emWin/Include
