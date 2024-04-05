@@ -431,17 +431,16 @@ ARM Macro Assembler    Page 7
               00000200 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
-ork --depend=.\objects\startup_lpc17xx.d -o.\objects\startup_lpc17xx.o -IU:\ESE
--VOITURE\ESE-Voiture-STM32F4-AVANT\ESE-Voiture-STM32F4-AVANT\src\GPS\RTE -IU:\E
-SE-VOITURE\ESE-Voiture-STM32F4-AVANT\ESE-Voiture-STM32F4-AVANT\src\GPS\RTE\Devi
-ce\LPC1768 -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include -IC:\Keil_v
-5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\Driver\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS
-\5.6.0\CMSIS\RTOS\RTX\INC -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Boards\K
-eil\MCB1700\Common -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include 
--IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\RTE_Driver -IC:\Keil_v5\ARM\PACK\K
-eil\MDK-Middleware\7.0.0\Board --predefine="__RTX SETA 1" --predefine="__UVISIO
-N_VERSION SETA 517" --predefine="_RTE_ SETA 1" --predefine="LPC175x_6x SETA 1" 
---list=.\listings\startup_lpc17xx.lst RTE\Device\LPC1768\startup_LPC17xx.s
+ork --depend=.\objects\startup_lpc17xx.d -o.\objects\startup_lpc17xx.o -IU:\S4\
+GPSservice\GPS\RTE -IU:\S4\GPSservice\GPS\RTE\Device\LPC1768 -IC:\Keil_v5\ARM\P
+ACK\ARM\CMSIS\5.6.0\CMSIS\Core\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CM
+SIS\Driver\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.6.0\CMSIS\RTOS\RTX\INC -IC
+:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Boards\Keil\MCB1700\Common -IC:\Keil_
+v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include -IC:\Keil_v5\ARM\PACK\Keil\LP
+C1700_DFP\2.4.0\RTE_Driver -IC:\Keil_v5\ARM\PACK\Keil\MDK-Middleware\7.0.0\Boar
+d --predefine="__RTX SETA 1" --predefine="__UVISION_VERSION SETA 517" --predefi
+ne="_RTE_ SETA 1" --predefine="LPC175x_6x SETA 1" --list=.\listings\startup_lpc
+17xx.lst RTE\Device\LPC1768\startup_LPC17xx.s
 
 
 
